@@ -1,26 +1,25 @@
 package shoppingMall;
 
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
-public class ManageProduct {
+
+public class ProductManager {
+
+	private LinkedHashMap<Integer,Product> productList = new LinkedHashMap<Integer,Product>();
 	
-	private ArrayList<Product> productList = new ArrayList<>();
-	//private HashMap<Integer,Product> productHash;
+	File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\product.csv");
+
 	
 	public void addList(Product pd) {
 		
-		ManageProduct mp = new ManageProduct();
-		
-		productList = mp.readList();
-		
-		productList.add(pd);
+		productList.put(pd.getProductID(),pd);
 
 	}
 	
 	public void uploadList() {
 		
-		File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\dataa.csv");
+		//File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\product.csv");
 		BufferedWriter bw = null;
 		
 		String NEWLINE = System.lineSeparator();
@@ -35,10 +34,12 @@ public class ManageProduct {
 			bw.write("productID,productName,price,stock");
 			bw.write(NEWLINE);
 
-			for(int i=0;i<productList.size();i++) {
+			Iterator<Integer> keys = productList.keySet().iterator();
+			while(keys.hasNext()) {
+				Integer key = keys.next();
 				String aData;
-				
-				aData = productList.get(i).getProductID() +","+productList.get(i).getProductName()+","+productList.get(i).getPrice()+","+productList.get(i).getStock();
+			
+				aData = productList.get(key).getProductID() +","+productList.get(key).getProductName()+","+productList.get(key).getPrice()+","+productList.get(key).getStock();
 	
 				bw.write(aData);
 				bw.write(NEWLINE);
@@ -62,14 +63,12 @@ public class ManageProduct {
 		}
 	}
 	
-	public ArrayList<Product> readList() {
+	public void readList() {
 		
-		File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\dataa.csv");
+		//File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\product.csv");
 		
 		List<List<String>> records = new ArrayList<>();
-		
-		//ArrayList<Product> pd = new ArrayList<>();
-	
+			
 		String line="";
 		
 		try(BufferedReader br = new BufferedReader(new FileReader(csv))){
@@ -83,7 +82,8 @@ public class ManageProduct {
 					
 			for(int i=1; i<records.size();i++) {
 				Product prod = new Product(Integer.parseInt(records.get(i).get(0)),records.get(i).get(1),Integer.parseInt(records.get(i).get(2)),Integer.parseInt(records.get(i).get(3)));
-				productList.add(prod);
+				//productList.add(prod);
+				productList.put(prod.getProductID(), prod);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -92,24 +92,23 @@ public class ManageProduct {
 		//records = ((1,a,b,c),(2,d,e,f),(3,g,h,i))
 		//values = (1,a,b,c)
 		
-		return productList;
+		//return productList;
 	}
 	
 	public void printList() {
 		
-		//ArrayList<Product> pd= new ArrayList<>();
-
-		ManageProduct mp = new ManageProduct();
-						
-		productList = mp.readList();
-		
 		StringBuilder sb = new StringBuilder ();
 
-		for(int i=0;i< productList.size();i++) {
-			int id = productList.get(i).getProductID();
-			String name = productList.get(i).getProductName();
-			int price = productList.get(i).getPrice();
-			int stock = productList.get(i).getStock();
+		Iterator<Integer> keys=productList.keySet().iterator();
+		
+		while(keys.hasNext()) {
+			
+			int key=keys.next();
+			
+			int id = productList.get(key).getProductID();
+			String name = productList.get(key).getProductName();
+			int price = productList.get(key).getPrice();
+			int stock = productList.get(key).getStock();
 								
 			sb.append(Integer.toString(id)).append(' ').append(name).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(stock)).append("\n");
 		}
@@ -121,39 +120,37 @@ public class ManageProduct {
 		
 	}
 	
-	public void modifyList(Product pd) {
-		
-		File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\dataa.csv");
-		
-	}
-	
-	public void deleteList(int delete_id) throws IOException{
-		//productHash = new HashMap<Integer,Product>();
-		
-		ManageProduct mp = new ManageProduct();
-		productList = mp.readList();
-
-		ArrayList<Integer> idList = new ArrayList<>();
+	public void modifyList(int modify_id, Product pd) {
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		String ans;
 
-		for(int i=0;i<productList.size();i++)
-			idList.add(productList.get(i).getProductID());
-		
-		for(int i=0;i<productList.size();i++)
-			System.out.print(idList.get(i)+" ");
-		System.out.println();
-		
-		if(idList.contains(delete_id)==true) {
+		if(productList.containsKey(modify_id)==true) {
 			
-			System.out.println("정말 삭제하시겠습니까?");
+			productList.replace(modify_id,pd);
+			
+			System.out.println("정보가 변경되었습니다.");
+
+		}
+		else {
+			System.out.println("해당 ID를 찾을 수 없습니다.");
+		}
+	}
+	
+	public void deleteList(int delete_id) throws IOException{
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		String ans;
+
+		if(productList.containsKey(delete_id)==true) {
+			
+			System.out.println("정말 삭제하시겠습니까?(y/n)");
 			ans = br.readLine();
-			int idx=idList.indexOf(delete_id);
 			
 			if(ans.equals("y"))
-				productList.remove(idx);
+				productList.remove(delete_id);
 			else
 				return;
 		}else {
