@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -17,14 +16,35 @@ import java.util.Scanner;
 
 public class CustomerManager {
 	
-private LinkedHashMap<Integer,Customer> CustomerList = new LinkedHashMap<Integer,Customer>();
+private LinkedHashMap<Integer,Customer> customerList = new LinkedHashMap<Integer,Customer>();
 	
 	File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\customer.csv");
 
 	
-	public void addList(Customer ct) {
-		
-		CustomerList.put(ct.getCustomID(),ct);
+	public void addList() {
+		//고객 등록
+	     
+	     Scanner sc= new Scanner(System.in);
+			      
+	      System.out.print("고객 ID (3자리이내의 숫자로 입력해주세요): ");
+	      int customID = sc.nextInt();
+	      
+	      sc.nextLine();
+	      System.out.print("고객명 : ");
+	      String customName = sc.nextLine();
+	      
+	      System.out.print("전화번호 : ");
+	      String phoneNum = sc.nextLine();
+	      
+	      System.out.print("주소 : ");
+	      String address = sc.nextLine();
+	      
+	      Customer ct = new Customer(customID, customName, phoneNum, address);
+	      
+	      customerList.put(ct.getCustomID(),ct);
+	      
+	      System.out.println("결과 : " + customID + " " + customName + " 등록 완료");
+	      System.out.println();
 
 	}
 	
@@ -42,15 +62,15 @@ private LinkedHashMap<Integer,Customer> CustomerList = new LinkedHashMap<Integer
 			//이어쓰기
 			//bw = new BufferedWriter(new FileWriter(csv,true));
 			
-			bw.write("CustomerID,CustomerName,price,stock");
+			bw.write("CustomerID,CustomerName,phoneNum,address");
 			bw.write(NEWLINE);
 
-			Iterator<Integer> keys = CustomerList.keySet().iterator();
+			Iterator<Integer> keys = customerList.keySet().iterator();
 			while(keys.hasNext()) {
 				Integer key = keys.next();
 				String aData;
 			
-				aData = CustomerList.get(key).getCustomID() +","+CustomerList.get(key).getCustomName()+","+CustomerList.get(key).getPhoneNum()+","+CustomerList.get(key).getAddress();
+				aData = customerList.get(key).getCustomID() +","+customerList.get(key).getCustomName()+","+customerList.get(key).getPhoneNum()+","+customerList.get(key).getAddress();
 	
 				bw.write(aData);
 				bw.write(NEWLINE);
@@ -93,7 +113,7 @@ private LinkedHashMap<Integer,Customer> CustomerList = new LinkedHashMap<Integer
 					
 			for(int i=1; i<records.size();i++) {
 				Customer cust = new Customer(Integer.parseInt(records.get(i).get(0)),records.get(i).get(1),records.get(i).get(2),records.get(i).get(3));
-				CustomerList.put(cust.getCustomID(), cust);
+				customerList.put(cust.getCustomID(), cust);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -102,23 +122,23 @@ private LinkedHashMap<Integer,Customer> CustomerList = new LinkedHashMap<Integer
 		//records = ((1,a,b,c),(2,d,e,f),(3,g,h,i))
 		//values = (1,a,b,c)
 		
-		//return CustomerList;
+		//return customerList;
 	}
 	
 	public void printList() {
 		
 		StringBuilder sb = new StringBuilder ();
 
-		Iterator<Integer> keys=CustomerList.keySet().iterator();
+		Iterator<Integer> keys=customerList.keySet().iterator();
 		
 		while(keys.hasNext()) {
 			
 			int key=keys.next();
 			
-			int id = CustomerList.get(key).getCustomID();
-			String name = CustomerList.get(key).getCustomName();
-			String phoneNum = CustomerList.get(key).getPhoneNum();
-			String address = CustomerList.get(key).getAddress();
+			int id = customerList.get(key).getCustomID();
+			String name = customerList.get(key).getCustomName();
+			String phoneNum = customerList.get(key).getPhoneNum();
+			String address = customerList.get(key).getAddress();
 								
 			sb.append(Integer.toString(id)).append(' ').append(name).append(' ').append(phoneNum).append(' ').append(address).append("\n");
 		}
@@ -130,31 +150,34 @@ private LinkedHashMap<Integer,Customer> CustomerList = new LinkedHashMap<Integer
 		
 	}
 	
-	public void modifyList(int modify_id) {
+	public void modifyList() {
 		
-		//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		// 고객 정보 수정
 		
-		//String ans;
-		Scanner sc=new Scanner(System.in);
+		Scanner sc =new Scanner(System.in);
+	      
+	      System.out.println("고객정보를 수정할 ID를 입력해주세요.");
+	      System.out.println("ID : ");
+	      int modify_id = sc.nextInt();
 		
-		System.out.print("수정할 ID : ");
-	      int getCustomID = sc.nextInt();
-	      
-	      sc.nextLine();
-	      System.out.print("수정할 고객명 : ");
-	      String getCustomName = sc.nextLine();
-	      
-	      System.out.print("수정할 전화번호 : ");
-	      String getPhoneNum = sc.nextLine();
-	      
-	      System.out.print("주소 : ");
-	      String getAddress = sc.nextLine();
-	      
-	      Customer m_customer = new Customer(getCustomID, getCustomName, getPhoneNum, getAddress);
-
-		if(CustomerList.containsKey(modify_id)==true) {
+		if(customerList.containsKey(modify_id)==true) {
 			
-			CustomerList.replace(modify_id,m_customer);
+			System.out.print("수정할 ID : ");
+		      int getCustomID = sc.nextInt();
+		      
+		      sc.nextLine();
+		      System.out.print("수정할 고객명 : ");
+		      String getCustomName = sc.nextLine();
+		      
+		      System.out.print("수정할 전화번호 : ");
+		      String getPhoneNum = sc.nextLine();
+		      
+		      System.out.print("주소 : ");
+		      String getAddress = sc.nextLine();
+		      
+		      Customer m_customer = new Customer(getCustomID, getCustomName, getPhoneNum, getAddress);
+			
+			  customerList.replace(modify_id,m_customer);
 			
 			System.out.println("수정이 완료되었습니다.");
 
@@ -164,19 +187,28 @@ private LinkedHashMap<Integer,Customer> CustomerList = new LinkedHashMap<Integer
 		}
 	}
 	
-	public void deleteList(int delete_id) throws IOException{
+	public void deleteList(){
+		// 고객 정보 삭제
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
+		Scanner sc= new Scanner(System.in);
+
 		String ans;
 
-		if(CustomerList.containsKey(delete_id)==true) {
+		int delete_cid;
+		System.out.println("삭제할 ID를 입력하세요.");
+					
+		delete_cid = sc.nextInt();
+
+		if(customerList.containsKey(delete_cid)==true) {
 			
 			System.out.println("정말 삭제하시겠습니까?(y/n)");
-			ans = br.readLine();
+			ans = sc.next();
+			//ans = br.readLine();
 			
 			if(ans.equals("y"))
-				CustomerList.remove(delete_id);
+				customerList.remove(delete_cid);
 			else
 				return;
 		}else {

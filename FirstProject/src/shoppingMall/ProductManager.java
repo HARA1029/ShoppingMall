@@ -11,10 +11,31 @@ public class ProductManager {
 	File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\product.csv");
 
 	
-	public void addList(Product pd) {
+	public void addList() {
+		// 상품 등록
+	      
+		Scanner sc = new Scanner(System.in);
 		
+	    System.out.print("상품 ID : ");
+	    int productID = sc.nextInt();
+	      
+	    sc.nextLine();
+	    System.out.print("상품명 : ");
+	    String productName = sc.nextLine();
+	      
+	    System.out.print("가격 : ");
+	    int price = sc.nextInt();
+	    
+	    System.out.print("재고 : ");
+	    int stock = sc.nextInt();
+	      
+	    Product pd = new Product(productID, productName, price, stock);
+	      
 		productList.put(pd.getProductID(),pd);
-
+	      
+	    System.out.println("결과 : " + productID + " " + productName + " 등록 완료");
+	    System.out.println();
+	      
 	}
 	
 	public void uploadList() {
@@ -120,17 +141,35 @@ public class ProductManager {
 		
 	}
 	
-	public void modifyList(int modify_id, Product pd) {
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		String ans;
+	public void modifyList() {
+		// 상품 정보 수정
 
+		Scanner sc = new Scanner(System.in);
+		
+		System.out.println("상품정보를 수정할 ID를 입력해주세요.");
+	      System.out.println("ID : ");
+	      int modify_id = sc.nextInt();
+		
 		if(productList.containsKey(modify_id)==true) {
 			
-			productList.replace(modify_id,pd);
+			System.out.print("수정할 ID : ");
+		      int getProductID = sc.nextInt();
+		      
+		      sc.nextLine();
+		      System.out.print("수정할 상품명 : ");
+		      String getProductName = sc.nextLine();
+		      
+		      System.out.print("수정할 가격 : ");
+		      int getPrice = sc.nextInt();
+		      
+		      System.out.print("수정할 재고 : ");
+		      int getStock = sc.nextInt();
+		      
+		      Product m_product = new Product(getProductID, getProductName, getPrice, getStock);
 			
-			System.out.println("정보가 변경되었습니다.");
+		      productList.replace(modify_id,m_product);
+			
+			System.out.println("수정이 완료되었습니다.");
 
 		}
 		else {
@@ -138,19 +177,26 @@ public class ProductManager {
 		}
 	}
 	
-	public void deleteList(int delete_id) throws IOException{
+	public void deleteList(){
+		// 상품 정보 삭제
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		String ans;
+		Scanner sc = new Scanner(System.in);
 
-		if(productList.containsKey(delete_id)==true) {
+		int delete_pid;
+		System.out.println("삭제할 ID를 입력하세요.");
+		
+		delete_pid = sc.nextInt();
+
+		if(productList.containsKey(delete_pid)==true) {
 			
 			System.out.println("정말 삭제하시겠습니까?(y/n)");
-			ans = br.readLine();
+			ans = sc.next();
 			
 			if(ans.equals("y"))
-				productList.remove(delete_id);
+				productList.remove(delete_pid);
 			else
 				return;
 		}else {
