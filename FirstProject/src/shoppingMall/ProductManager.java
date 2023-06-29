@@ -12,6 +12,7 @@ public class ProductManager {
 
 	
 	public void addList() {
+		
 		// 상품 등록
 	      
 		Scanner sc = new Scanner(System.in);
@@ -137,11 +138,51 @@ public class ProductManager {
 		System.out.println(sb);
 	}
 	
-	public void searchInfo(int id) {
+	public Product searchInfo(int id) {
 		
+		// 상품 ID로 검색
+		
+		String productName="";
+		int price=0;
+		int stock=0;
+		
+		if(productList.containsKey(id)==true) {
+			productName = productList.get(id).getProductName();
+			price = productList.get(id).getPrice();
+			stock = productList.get(id).getStock();
+		}
+		else {
+			System.out.println("해당 ID의 상품이 존재하지 않습니다.");
+		}
+		
+		Product pd = new Product(id,productName,price,stock);
+		
+		return pd;
 	}
 	
-	public void modifyList() {
+	public void modifyStock(Product pd,int count) {
+		
+		int id = pd.getProductID();
+		String productName = pd.getProductName();
+		int price = pd.getPrice();
+		int stock = pd.getStock() + count;
+		
+		if(productList.containsKey(id)==true) {
+			
+			//String productName = productList.get(id).getProductName();
+			
+			Product m_product = new Product(id, productName, price, stock);
+		
+			productList.replace(id,m_product);
+		
+			//System.out.println("수정이 완료되었습니다.");
+		}
+		else {
+			System.out.println("재고 변경 오류");
+		}
+	}
+	
+	public void modifyList(){
 		// 상품 정보 수정
 
 		Scanner sc = new Scanner(System.in);
@@ -152,22 +193,19 @@ public class ProductManager {
 		
 		if(productList.containsKey(modify_id)==true) {
 			
-			System.out.print("수정할 ID : ");
-		      int getProductID = sc.nextInt();
+		    sc.nextLine();
+		    System.out.print("수정할 상품명 : ");
+		    String getProductName = sc.nextLine();
 		      
-		      sc.nextLine();
-		      System.out.print("수정할 상품명 : ");
-		      String getProductName = sc.nextLine();
+		    System.out.print("수정할 가격 : ");
+		    int getPrice = sc.nextInt();
 		      
-		      System.out.print("수정할 가격 : ");
-		      int getPrice = sc.nextInt();
+		    System.out.print("수정할 재고 : ");
+		    int getStock = sc.nextInt();
 		      
-		      System.out.print("수정할 재고 : ");
-		      int getStock = sc.nextInt();
-		      
-		      Product m_product = new Product(getProductID, getProductName, getPrice, getStock);
+		    Product m_product = new Product(modify_id, getProductName, getPrice, getStock);
 			
-		      productList.replace(modify_id,m_product);
+		    productList.replace(modify_id,m_product);
 			
 			System.out.println("수정이 완료되었습니다.");
 
@@ -178,6 +216,7 @@ public class ProductManager {
 	}
 	
 	public void deleteList(){
+		
 		// 상품 정보 삭제
 
 		//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

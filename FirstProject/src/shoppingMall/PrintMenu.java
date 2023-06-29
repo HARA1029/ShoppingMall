@@ -26,7 +26,7 @@ public class PrintMenu {
    
    private static Scanner sc = new Scanner(System.in);
    
-   public void printMain(CustomerManager cm,ProductManager pm) {
+   public void printMain(CustomerManager cm,ProductManager pm,OrdersManager om) {
       boolean run = true;
       while(run) {
          System.out.println("--------------------------------------------");
@@ -42,7 +42,7 @@ public class PrintMenu {
          }else if(n == 2) {
             customer(cm);
          }else if(n == 3) {
-            order();
+            order(pm,om);
          }else if(n == 0) {
             run = false;
          }else {
@@ -52,19 +52,21 @@ public class PrintMenu {
 
    }
    
-   private static void product(ProductManager pm) {
+  public void product(ProductManager pm) {
       boolean run = true;
       while(run) {
          System.out.println("1. 상품관리");
-         System.out.println("-----------------------------------------");
-         System.out.println(" 1. 등록 | 2. 수정 | 3. 삭제 | 0. 이전단계 ");
-         System.out.println("-----------------------------------------");
+         System.out.println("---------------------------------------------");
+         System.out.println(" 1. 조회 | 2. 등록 | 3. 수정 | 4. 삭제 | 0. 이전단계 ");
+         System.out.println("---------------------------------------------");
          System.out.println("선택 >>> ");
          System.out.println();
          
          int n = sc.nextInt();
          
-         if(n == 1) {
+         if(n==1) {
+        	pm.printList();
+      	 }else if(n == 2) {
             pm.addList();
          } else if(n == 2) {
             pm.modifyList();
@@ -75,39 +77,41 @@ public class PrintMenu {
          }
          
          //상품 리스트 출력 
-         pm.printList();
+         //pm.printList();
       }
    }
 
-   static void customer(CustomerManager cm){
+   public void customer(CustomerManager cm){
       boolean run = true;
       while(run) {
          System.out.println("2. 고객관리");
-         System.out.println("-----------------------------------------");
-         System.out.println(" 1. 등록 | 2. 수정 | 3. 삭제 | 0. 이전단계 ");
-         System.out.println("-----------------------------------------");
+         System.out.println("---------------------------------------------");
+         System.out.println(" 1. 조회 | 2. 등록 | 3. 수정 | 4. 삭제 | 0. 이전단계 ");
+         System.out.println("---------------------------------------------");
          System.out.println("선택 >>> ");
          System.out.println();
          
          int n = sc.nextInt();
          
          if(n == 1) {
+            cm.printList();
+         } if(n == 2) {
             cm.addList();
-         } else if(n == 2) {
-            cm.modifyList();
          } else if(n == 3) {
+            cm.modifyList();
+         } else if(n == 4) {
             cm.deleteList();
          } else if(n == 0) {
             run = false;
          }
          
          //고객 리스트 출력 
-	      cm.printList();
+	     //cm.printList();
       }
       
    }
 
-   private static void order() {
+   public void order(ProductManager pm, OrdersManager om) {
 	   boolean run = true;
 	      while(run) {
 	         System.out.println("3. 주문관리");
@@ -120,15 +124,15 @@ public class PrintMenu {
 	         int n = sc.nextInt();
 	         
 	         if(n == 1) {
-	            //cm.addList();
+	            om.printList();
 	         } else if(n == 2) {
-	            //cm.modifyList();
+	        	pm.printList();
+	            om.addList(pm);
 	         } else if(n == 3) {
-	            //cm.deleteList();
+	            om.deleteList(pm);
 	         } else if(n == 0) {
 	            run = false;
 	         }
-      
    }
 
    }

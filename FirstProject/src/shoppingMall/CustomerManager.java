@@ -20,7 +20,6 @@ private LinkedHashMap<Integer,Customer> customerList = new LinkedHashMap<Integer
 	
 	File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\customer.csv");
 
-	
 	public void addList() {
 		//고객 등록
 	     
@@ -156,15 +155,12 @@ private LinkedHashMap<Integer,Customer> customerList = new LinkedHashMap<Integer
 		
 		Scanner sc =new Scanner(System.in);
 	      
-	      System.out.println("고객정보를 수정할 ID를 입력해주세요.");
+	      System.out.println("고객ID : ");
 	      System.out.println("ID : ");
 	      int modify_id = sc.nextInt();
 		
 		if(customerList.containsKey(modify_id)==true) {
 			
-			System.out.print("수정할 ID : ");
-		      int getCustomID = sc.nextInt();
-		      
 		      sc.nextLine();
 		      System.out.print("수정할 고객명 : ");
 		      String getCustomName = sc.nextLine();
@@ -172,10 +168,10 @@ private LinkedHashMap<Integer,Customer> customerList = new LinkedHashMap<Integer
 		      System.out.print("수정할 전화번호 : ");
 		      String getPhoneNum = sc.nextLine();
 		      
-		      System.out.print("주소 : ");
+		      System.out.print("수정할 주소 : ");
 		      String getAddress = sc.nextLine();
 		      
-		      Customer m_customer = new Customer(getCustomID, getCustomName, getPhoneNum, getAddress);
+		      Customer m_customer = new Customer(modify_id, getCustomName, getPhoneNum, getAddress);
 			
 			  customerList.replace(modify_id,m_customer);
 			
