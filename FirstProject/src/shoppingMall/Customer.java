@@ -2,13 +2,13 @@ package shoppingMall;
 
 public class Customer {
 
-	private int customID;
-	private int customPW;
+	private String customID;
+	private String customPW;
 	private String customName;
 	private String phoneNum;
 	private String address;
 
-	Customer(int customID, int customPW, String customName, String phoneNum, String address) {
+	Customer(String customID, String customPW, String customName, String phoneNum, String address) {
 		this.customID = customID;
 		this.customPW = customPW;
 		this.customName = customName;
@@ -17,18 +17,18 @@ public class Customer {
 	}
 
 
-	public int getCustomID() {
+	public String getCustomID() {
 		return customID;
 	}
 
-	public void setCustomID(int customID) {
+	public void setCustomID(String customID) {
 		this.customID = customID;
 	}
-	public int getCustomPW() {
+	public String getCustomPW() {
 		return customPW;
 	}
 
-	public void setCustomPW(int customPW) {
+	public void setCustomPW(String customPW) {
 		this.customPW = customPW;
 	}
 	public String getCustomName() {

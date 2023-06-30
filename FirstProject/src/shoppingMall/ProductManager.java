@@ -17,10 +17,10 @@ public class ProductManager {
 
 		Scanner sc = new Scanner(System.in);
 
-		System.out.print("상품 ID : ");
-		int productID = sc.nextInt();
+		// 상품ID 마지막값 + 1 연구
+		
+		int productID = productList.size()+1;
 
-		sc.nextLine();
 		System.out.print("상품명 : ");
 		String productName = sc.nextLine();
 

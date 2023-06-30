@@ -3,14 +3,14 @@ package shoppingMall;
 public class Orders {
 	
 	private int ordersID;
-	private int customID;
+	private String customID;
 	private int productID;
 	private int price;
 	private int count;
 	private int total;
 	//private String payment;
 	
-	Orders(int ordersID,int customID,int productID,int price, int count, int total){
+	Orders(int ordersID,String customID,int productID,int price, int count, int total){
 		this.ordersID = ordersID;
 		this.customID = customID;
 		this.productID = productID;
@@ -27,10 +27,10 @@ public class Orders {
 		this.ordersID=ordersID;
 	}
 	
-	public int getCustomID(){
+	public String getCustomID(){
 		return customID;
 	}
-	public void setCustomID(int customID) {
+	public void setCustomID(String customID) {
 		this.customID=customID;
 	}
 	

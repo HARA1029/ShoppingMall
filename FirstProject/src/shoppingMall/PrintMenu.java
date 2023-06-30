@@ -62,7 +62,6 @@ public class PrintMenu {
 			System.out.println("선택 >>> ");
 			System.out.println();
 
-
 			int n = sc.nextInt();
 
 			if(n == 1) { //로그인
@@ -156,7 +155,7 @@ public class PrintMenu {
 		}
 	}
 
-	public void customer(ProductManager pm, OrdersManager om, int id) { //고객
+	public void customer(ProductManager pm, OrdersManager om, String id) { //고객
 		/*
 	      1. 상품조회
 	      2. 상품구매

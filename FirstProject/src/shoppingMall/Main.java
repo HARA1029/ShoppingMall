@@ -5,13 +5,15 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		 // 입력값 검열해주는 코드 추가해야함
+		 // String 입력값에 공백 허용X 
+		 // 단, 검색에는 앞뒤공백 빼고 처리해주기
+		 // 입력 예외처리 ( ex. 숫자입력에 문자입력)
 		
-		 
+		 // 의문 ? 여러 곳에서 객체 생성..
+		
 		 CustomerManager cm = new CustomerManager();
 		 ProductManager pm = new ProductManager();
 		 OrdersManager om = new OrdersManager();
-		 
 		 PrintMenu menu = new PrintMenu();
 		 
 		 // 고객/상품/구매 리스트 불러오기
@@ -19,19 +21,16 @@ public class Main {
 		 cm.readList();
 		 pm.readList();
 		 om.readList();
- 
-		 //초기 메뉴 - 로그인 메뉴
-		 
-		 
 		 
 		 // 메인 메뉴
 		 menu.printMain(cm,pm,om);
 		 
 		 // 고객/상품/구매 리스트 업로드
-			
 	     cm.uploadList();	  			
 	  	 pm.uploadList();
 	  	 om.uploadList();
 
+	  	 
+	  	 // 변수 깔끔하게 정리 , 주석 달기
 	}
 }

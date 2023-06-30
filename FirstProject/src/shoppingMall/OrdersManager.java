@@ -13,17 +13,20 @@ public class OrdersManager {
 	File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\orders.csv");
 
 
-	// ! 상품 재고 0이면 다른 동작하게 구현해야함
+	// ! 상품 재고 0이면 구매 못하게 함
 
-	public void addList(ProductManager pm, int id){
+	public void addList(ProductManager pm, String id){
+		
 		// 구매 리스트 추가
+
+		// 주문ID 마지막값 + 1 연구
 
 		int ordersID = ordersList.size()+1;
 
 		Scanner sc= new Scanner(System.in);
 
 		//System.out.println("고객 ID : ");
-		int customID = id;
+		String customID = id;
 
 
 		System.out.print("구매할 상품 ID : ");
@@ -133,7 +136,7 @@ public class OrdersManager {
 			}
 
 			for(int i=1; i<records.size();i++) {
-				Orders od = new Orders(Integer.parseInt(records.get(i).get(0)),Integer.parseInt(records.get(i).get(1)),Integer.parseInt(records.get(i).get(2)),Integer.parseInt(records.get(i).get(3)), Integer.parseInt(records.get(i).get(4)), Integer.parseInt(records.get(i).get(5)));
+				Orders od = new Orders(Integer.parseInt(records.get(i).get(0)),records.get(i).get(1),Integer.parseInt(records.get(i).get(2)),Integer.parseInt(records.get(i).get(3)), Integer.parseInt(records.get(i).get(4)), Integer.parseInt(records.get(i).get(5)));
 
 				ordersList.put(od.getOrdersID(), od);
 			}
@@ -148,7 +151,7 @@ public class OrdersManager {
 
 	// ! get으로 가져오는 값들 다 변수 선언으로 빼주기
 
-	public void readList_c(int cid) {
+	public void readList_c(String cid) {
 
 		//File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\product.csv");
 
@@ -170,11 +173,11 @@ public class OrdersManager {
 
 			for(int i=1; i<records.size();i++) {
 
-				int customID = Integer.parseInt(records.get(i).get(1));
+				String customID = records.get(i).get(1);
 
-				if( customID == cid ) {
+				if( customID.equals(cid) ) {
 
-					Orders od = new Orders(Integer.parseInt(records.get(i).get(0)),Integer.parseInt(records.get(i).get(1)),Integer.parseInt(records.get(i).get(2)),Integer.parseInt(records.get(i).get(3)), Integer.parseInt(records.get(i).get(4)), Integer.parseInt(records.get(i).get(5)));
+					Orders od = new Orders(Integer.parseInt(records.get(i).get(0)),records.get(i).get(1),Integer.parseInt(records.get(i).get(2)),Integer.parseInt(records.get(i).get(3)), Integer.parseInt(records.get(i).get(4)), Integer.parseInt(records.get(i).get(5)));
 
 					//중복키라 중복넣기가 불가;;; 리스트로 구현하자
 					custom_ordersList.add(od);	
@@ -197,13 +200,13 @@ public class OrdersManager {
 		for(Orders e : custom_ordersList) {
 
 			int id = e.getOrdersID();
-			int customID = e.getCustomID();
+			String customID = e.getCustomID();
 			int productID = e.getProductID();
 			int price =	e.getPrice();
 			int count = e.getCount();
 			int total = e.getTotal();
 
-			sb.append(Integer.toString(id)).append(' ').append(Integer.toString(customID)).append(' ').append(Integer.toString(productID)).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(count)).append(' ').append(Integer.toString(total)).append("\n");
+			sb.append(Integer.toString(id)).append(' ').append(customID).append(' ').append(Integer.toString(productID)).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(count)).append(' ').append(Integer.toString(total)).append("\n");
 
 		}
 
@@ -235,13 +238,13 @@ public class OrdersManager {
 			int key=keys.next();
 
 			int id = ordersList.get(key).getOrdersID();
-			int customID = ordersList.get(key).getCustomID();
+			String customID = ordersList.get(key).getCustomID();
 			int productID = ordersList.get(key).getProductID();
 			int price = ordersList.get(key).getPrice();
 			int count = ordersList.get(key).getCount();
 			int total = ordersList.get(key).getTotal();
 
-			sb.append(Integer.toString(id)).append(' ').append(Integer.toString(customID)).append(' ').append(Integer.toString(productID)).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(count)).append(' ').append(Integer.toString(total)).append("\n");
+			sb.append(Integer.toString(id)).append(' ').append(customID).append(' ').append(Integer.toString(productID)).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(count)).append(' ').append(Integer.toString(total)).append("\n");
 		}
 
 		System.out.println(sb);

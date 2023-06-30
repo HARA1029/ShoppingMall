@@ -16,36 +16,36 @@ import java.util.Scanner;
 
 public class CustomerManager {
 
-	private LinkedHashMap<Integer,Customer> customerList = new LinkedHashMap<Integer,Customer>();
+	private LinkedHashMap<String,Customer> customerList = new LinkedHashMap<String,Customer>();
 
 	File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\customer.csv");
 
 
 	public void checkLogin(ProductManager pm, OrdersManager om) {
-		
+
 		boolean run = true;
-		
+
 		boolean check = false;
 
 		Scanner sc = new Scanner(System.in);
-		
+
 		PrintMenu menu = new PrintMenu();
 
-		int id=0;
-		
+		String id="";
+
 		while(run) {
 			System.out.print("ID : ");
-			id = sc.nextInt();
+			id = sc.nextLine();
 
 			System.out.print("PW : ");
-			int pw = sc.nextInt();
+			String pw = sc.nextLine();
 
 			if(customerList.containsKey(id) == true) {
-				if (customerList.get(id).getCustomPW() == pw ) {
+				if (customerList.get(id).getCustomPW().equals(pw) ) {
 					System.out.println("로그인에 성공하였습니다.");
 					check = true;
 					run=false;
-					
+
 				} else {
 					System.out.println("비밀번호가 틀렸습니다. 다시 입력해주세요.");
 					System.out.print("가입하지 않으신 분들은 '0' 을 다시 로그인하고 싶으신 분들은 다른 숫자를 입력해주세요.");
@@ -63,9 +63,9 @@ public class CustomerManager {
 					run = false; 
 				}
 			}  
-		
+
 		}
-		
+
 		if(check==true)
 			menu.customer(pm, om, id);
 		//return check;
@@ -77,30 +77,57 @@ public class CustomerManager {
 
 		Scanner sc = new Scanner(System.in);
 
-		System.out.print("고객 ID (3자리이내의 숫자로 입력해주세요): ");
-		int customID = sc.nextInt();
+		ProductManager pm = new ProductManager();
+		OrdersManager om = new OrdersManager();
 
-		System.out.print("고객 PW (4자리 숫자로 입력해주세요): ");
-		int customPW = sc.nextInt();
+		boolean run = true;
 
-		sc.nextLine();
-		System.out.print("고객명 : ");
-		String customName = sc.nextLine();
+		while(run) {
 
-		System.out.print("전화번호 : ");
-		String phoneNum = sc.nextLine();
+			System.out.print("고객 ID (6자리 이내로 입력해주세요): ");
+			String customID = sc.nextLine();
 
-		System.out.print("주소 : ");
-		String address = sc.nextLine();
+			if(customerList.containsKey(customID) == true) {
+				System.out.println("중복된 아이디입니다. 다시 입력해주세요");
+				System.out.println();
+				continue;
+			}
+			else {
 
-		Customer ct = new Customer(customID, customPW, customName, phoneNum, address);
+				System.out.print("고객 PW (10자리 이내로 입력해주세요): ");
+				String customPW = sc.nextLine();
 
-		customerList.put(ct.getCustomID(),ct);
+				System.out.print("고객명 : ");
+				String customName = sc.nextLine();
 
-		System.out.println("결과 : " + customID + " " + customName + " 등록 완료");
-		System.out.println();
+				System.out.print("전화번호 : ");
+				String phoneNum = sc.nextLine();
+
+				System.out.print("주소 : ");
+				String address = sc.nextLine();
+
+				Customer ct = new Customer(customID, customPW, customName, phoneNum, address);
+
+
+				customerList.put(ct.getCustomID(),ct);
+
+				System.out.println("결과 : " + customID + " " + customName + " 가입이 완료되었습니다.");
+				System.out.println();
+				
+				run =false;
+			}
+			
+			System.out.println("로그인 하시려면 '1' 를 눌러주세요.");
+			int num = sc.nextInt();
+			
+			if(num == 1) 
+				checkLogin(pm, om);
+			
+			run=false;
+		}
 
 	}
+
 
 
 	public void uploadList() {
@@ -120,9 +147,9 @@ public class CustomerManager {
 			bw.write("CustomerID,CustomerPW,CustomerName,phoneNum,address");
 			bw.write(NEWLINE);
 
-			Iterator<Integer> keys = customerList.keySet().iterator();
+			Iterator<String> keys = customerList.keySet().iterator();
 			while(keys.hasNext()) {
-				Integer key = keys.next();
+				String key = keys.next();
 				String aData;
 
 				aData = customerList.get(key).getCustomID()+","+ customerList.get(key).getCustomPW() +","+customerList.get(key).getCustomName()+","+customerList.get(key).getPhoneNum()+","+customerList.get(key).getAddress();
@@ -167,7 +194,7 @@ public class CustomerManager {
 			}
 
 			for(int i=1; i<records.size();i++) {
-				Customer cust = new Customer(Integer.parseInt(records.get(i).get(0)),Integer.parseInt(records.get(i).get(1)),records.get(i).get(2),records.get(i).get(3),records.get(i).get(4));
+				Customer cust = new Customer(records.get(i).get(0),records.get(i).get(1),records.get(i).get(2),records.get(i).get(3),records.get(i).get(4));
 				customerList.put(cust.getCustomID(), cust);
 			}
 		} catch (Exception e) {
@@ -185,18 +212,18 @@ public class CustomerManager {
 
 		StringBuilder sb = new StringBuilder ();
 
-		Iterator<Integer> keys=customerList.keySet().iterator();
+		Iterator<String> keys=customerList.keySet().iterator();
 
 		while(keys.hasNext()) {
 
-			int key=keys.next();
+			String key=keys.next();
 
-			int id = customerList.get(key).getCustomID();
+			String id = customerList.get(key).getCustomID();
 			String name = customerList.get(key).getCustomName();
 			String phoneNum = customerList.get(key).getPhoneNum();
 			String address = customerList.get(key).getAddress();
 
-			sb.append(Integer.toString(id)).append(' ').append(name).append(' ').append(phoneNum).append(' ').append(address).append("\n");
+			sb.append(id).append(' ').append(name).append(' ').append(phoneNum).append(' ').append(address).append("\n");
 		}
 
 		System.out.println(sb);
@@ -214,12 +241,12 @@ public class CustomerManager {
 
 		System.out.println("고객정보를 수정할 ID를 입력해주세요.");
 		System.out.println("ID : ");
-		int modify_id = sc.nextInt();
+		String modify_id = sc.nextLine();
 
 		if(customerList.containsKey(modify_id)==true) {
 
 			System.out.print("수정할 PW : ");
-			int getCustomPW = sc.nextInt();
+			String getCustomPW = sc.nextLine();
 
 			sc.nextLine();
 			System.out.print("수정할 고객명 : ");
@@ -253,10 +280,10 @@ public class CustomerManager {
 
 		String ans;
 
-		int delete_cid;
+		String delete_cid="";
 		System.out.println("삭제할 ID를 입력하세요.");
 
-		delete_cid = sc.nextInt();
+		delete_cid = sc.nextLine();
 
 		if(customerList.containsKey(delete_cid)==true) {
 
