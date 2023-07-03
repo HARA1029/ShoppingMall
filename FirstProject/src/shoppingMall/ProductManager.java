@@ -10,6 +10,7 @@ public class ProductManager {
 
 	File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\product.csv");
 
+	InputCheck ip = new InputCheck();
 
 	public void addList() {
 
@@ -18,17 +19,41 @@ public class ProductManager {
 		Scanner sc = new Scanner(System.in);
 
 		// 상품ID 마지막값 + 1 연구
-		
+
 		int productID = productList.size()+1;
 
 		System.out.print("상품명 : ");
 		String productName = sc.nextLine();
 
-		System.out.print("가격 : ");
-		int price = sc.nextInt();
+		int price=0;
+		String tmp_p="";
 
-		System.out.print("재고 : ");
-		int stock = sc.nextInt();
+		do {
+			System.out.print("가격 : ");
+
+			tmp_p=sc.nextLine();			
+
+		}while(!ip.checkInput(tmp_p));
+
+		price=Integer.parseInt(tmp_p);
+
+		//System.out.print("가격 : ");
+		//int price = sc.nextInt();
+		
+		int stock=0;
+		String tmp_s="";
+
+		do {
+			System.out.print("재고 : ");
+
+			tmp_s=sc.nextLine();			
+
+		}while(!ip.checkInput(tmp_s));
+
+		stock=Integer.parseInt(tmp_s);
+
+		//System.out.print("재고 : ");
+		//int stock = sc.nextInt();
 
 		Product pd = new Product(productID, productName, price, stock);
 
@@ -168,7 +193,7 @@ public class ProductManager {
 		// 상품 ID 존재 여부 검사
 
 		boolean result=false;
-		
+
 		if(productList.containsKey(id)==true) {
 			result=true;
 		}
@@ -205,7 +230,9 @@ public class ProductManager {
 
 		System.out.println("상품정보를 수정할 ID를 입력해주세요.");
 		System.out.println("ID : ");
-		int modify_id = sc.nextInt();
+
+		String tmp = sc.nextLine();
+		int modify_id = Integer.parseInt(tmp);
 
 		if(productList.containsKey(modify_id)==true) {
 
@@ -213,11 +240,15 @@ public class ProductManager {
 			System.out.print("수정할 상품명 : ");
 			String getProductName = sc.nextLine();
 
+			//여기 문제
 			System.out.print("수정할 가격 : ");
-			int getPrice = sc.nextInt();
+			String tmp_p = sc.nextLine();
+			int getPrice = Integer.parseInt(tmp_p);
 
+			//여기 문제
 			System.out.print("수정할 재고 : ");
-			int getStock = sc.nextInt();
+			String tmp_s = sc.nextLine();
+			int getStock = Integer.parseInt(tmp_s);
 
 			Product m_product = new Product(modify_id, getProductName, getPrice, getStock);
 
@@ -240,10 +271,10 @@ public class ProductManager {
 		String ans;
 		Scanner sc = new Scanner(System.in);
 
-		int delete_pid;
 		System.out.println("삭제할 ID를 입력하세요.");
 
-		delete_pid = sc.nextInt();
+		String tmp = sc.nextLine();
+		int delete_pid = Integer.parseInt(tmp);
 
 		if(productList.containsKey(delete_pid)==true) {
 

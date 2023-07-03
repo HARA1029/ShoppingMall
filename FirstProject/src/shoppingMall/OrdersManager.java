@@ -7,16 +7,17 @@ import java.io.*;
 public class OrdersManager {
 
 	private LinkedHashMap<Integer,Orders> ordersList = new LinkedHashMap<Integer,Orders>();
-	//private LinkedHashMap<Integer,Orders> custom_ordersList = new LinkedHashMap<Integer,Orders>();
 	private ArrayList<Orders> custom_ordersList = new ArrayList<Orders>();
 
 	File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\orders.csv");
+	
+	
+	InputCheck ip = new InputCheck();
 
-
-	// ! 상품 재고 0이면 구매 못하게 함
+	//예외처리 후 다시 목록조회 해주기?
 
 	public void addList(ProductManager pm, String id){
-		
+
 		// 구매 리스트 추가
 
 		// 주문ID 마지막값 + 1 연구
@@ -25,45 +26,60 @@ public class OrdersManager {
 
 		Scanner sc= new Scanner(System.in);
 
-		//System.out.println("고객 ID : ");
 		String customID = id;
 
-
 		System.out.print("구매할 상품 ID : ");
-		int productID = sc.nextInt();
+		String tmp = sc.nextLine();
+		int productID = Integer.parseInt(tmp);
 
 		if(pm.check_PID(productID)) {
 
 			// 구매할 상품
 			Product pd = pm.searchInfo(productID); 
 
-			System.out.print("구매할 상품 수량 : ");
-			int count = sc.nextInt();
-
-			if(pd.getStock()>=count) {
-				//sc.nextLine();
-				//System.out.print("결제 수단 번호를 선택하세요");
-				//String payment = sc.next();
-
-				//상품ID로 가격 가져오기
-				int price = pd.getPrice();
-
-				int total = price*count;
-
-				Orders od = new Orders(ordersID, customID, productID, price, count, total);
-
-				ordersList.put(od.getOrdersID(),od);
-
-
-				//재고 수량 감소
-
-				pm.modifyStock(pm.searchInfo(productID),-count);
-
-				System.out.println("(주문번호 " + ordersID + ") " + customID + "님 " +" 구매가 완료되었습니다. ");
-				System.out.println();
+			// 재고 0일 때
+			if(pd.getStock()==0) {
+				System.out.println("해당 ID의 상품은 품절입니다.");
 			}
 			else {
-				System.out.println("상품의 수량을 "+pd.getStock()+" 이하로 입력하세요.");
+				
+				int count=0;
+				String tmp_cnt="";
+				
+				do {
+					System.out.print("구매할 상품 수량 : ");
+					
+					tmp_cnt=sc.nextLine();			
+					
+				}while(!ip.checkInput(tmp_cnt));
+								
+				count=Integer.parseInt(tmp_cnt);
+				
+
+				if(pd.getStock()>=count) {
+					//sc.nextLine();
+					//System.out.print("결제 수단 번호를 선택하세요");
+					//String payment = sc.next();
+
+					//상품ID로 가격 가져오기
+					int price = pd.getPrice();
+
+					int total = price*count;
+
+					Orders od = new Orders(ordersID, customID, productID, price, count, total);
+
+					ordersList.put(od.getOrdersID(),od);
+
+					//재고 수량 감소
+
+					pm.modifyStock(pm.searchInfo(productID),-count);
+
+					System.out.println("(주문번호 " + ordersID + ") " + customID + "님 " +" 구매가 완료되었습니다. ");
+					System.out.println();
+				}
+				else {
+					System.out.println("상품의 수량을 "+pd.getStock()+" 이하로 입력하세요.");
+				}
 			}
 		}
 		else {
@@ -263,10 +279,10 @@ public class OrdersManager {
 		String ans;
 		Scanner sc = new Scanner(System.in);
 
-		int delete_id;
 		System.out.println("주문번호 입력 : ");
 
-		delete_id = sc.nextInt();
+		String tmp = sc.nextLine();
+		int delete_id = Integer.parseInt(tmp);
 
 		if(ordersList.containsKey(delete_id)==true) {
 

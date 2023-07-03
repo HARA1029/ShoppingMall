@@ -48,9 +48,10 @@ public class CustomerManager {
 
 				} else {
 					System.out.println("비밀번호가 틀렸습니다. 다시 입력해주세요.");
-					System.out.print("가입하지 않으신 분들은 '0' 을 다시 로그인하고 싶으신 분들은 다른 숫자를 입력해주세요.");
-					int num = sc.nextInt();
-					if(num == 0) {
+					System.out.print("가입하지 않으신 분들은 '0' 을 다시 로그인하고 싶으신 분들은 아무 키나 입력해주세요.");
+
+					String tmp = sc.nextLine();
+					if(tmp == "0") {		
 						run = false; 
 					}
 				}
@@ -58,12 +59,12 @@ public class CustomerManager {
 			} else {
 				System.out.println("아이디가 틀렸습니다. 다시 입력해주세요.");
 				System.out.print("가입하지 않으신 분들은 '0' 을 다시 로그인하고 싶으신 분들은 다른 숫자를 입력해주세요.");
-				int num = sc.nextInt();
-				if(num == 0) {
+				
+				String tmp = sc.nextLine();
+				if(tmp == "0") {		
 					run = false; 
 				}
 			}  
-
 		}
 
 		if(check==true)
@@ -113,15 +114,16 @@ public class CustomerManager {
 
 				System.out.println("결과 : " + customID + " " + customName + " 가입이 완료되었습니다.");
 				System.out.println();
-				
+
 				run =false;
 			}
-			
+
 			System.out.println("로그인 하시려면 '1' 를 눌러주세요.");
-			int num = sc.nextInt();
 			
-			if(num == 1) 
+			String tmp = sc.nextLine();
+			if(tmp == "1") {		
 				checkLogin(pm, om);
+			}
 			
 			run=false;
 		}

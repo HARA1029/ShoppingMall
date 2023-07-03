@@ -3,99 +3,107 @@ package shoppingMall;
 import java.util.Scanner;
 
 public class PrintMenu {
-	
 	/*
-     (1) 상품 관리
-      - 상품 등록
-      - 상품 수정
-      - 상품 삭제
+      1. 고객
+         (1) 로그인
+            1) 상품 조회
+            2) 상품 구매
+            3) 구매 취소
+         (2) 회원가입
 
-    (2) 고객 관리
-      - 고객 등록
-      - 고객 수정
-      - 고객 삭제
+      2. 관리자
+      (1) 로그인
+         1) 상품관리
+            1> 등록
+            2> 수정
+            3> 삭제
+         2) 고객관리
+            1> 고객 조회
 
-    (3) 주문 관리
-      - 조회
-      - 구매
-      - 환불
 	 */
 
 	private static Scanner sc = new Scanner(System.in);
-	
-	public void printMain(CustomerManager cm,ProductManager pm,OrdersManager om) {
+
+	String bar="-";
+	int bar_count=80;
+
+	public void printMain(CustomerManager cm, ProductManager pm, OrdersManager om) {
 
 		System.out.println("KOSA 쇼핑몰에 오신 것을 환영합니다.");
 		System.out.println("서비스를 이용하시려면 로그인을 해주세요");
 
 		boolean run = true;
 		while(run) {
-			System.out.println("--------------------------------------------------------");
+
+			System.out.println(bar.repeat(bar_count));
 			System.out.println(" 1. 고객 | 2. 관리자 | 0. 끝내기");
-			System.out.println("--------------------------------------------------------");
+			System.out.println(bar.repeat(bar_count));
 			System.out.print("선택 >> ");
+
+
+			String n = sc.nextLine();
 			System.out.println();
 
-			int n = sc.nextInt();
-
-			if(n == 1) {
+			if(n.equals("1")) {
 				login_c(pm, cm, om);
-			}else if(n == 2) {
+			}else if(n.equals("2")) {
 				login_a(pm, cm, om);
-			}else if(n == 0) {
+			}else if(n.equals("0")) {
 				run = false;
 			}else {
 				System.out.println("올바르지 않은 입력값입니다. 다시 입력해주세요.");
-				return;
 			}
 		} System.out.println("종료");
 	}
 
 	public void login_c(ProductManager pm, CustomerManager cm, OrdersManager om){
+
 		boolean run = true;
 		while(run) {
 
 			System.out.println("1. 고객");
-			System.out.println("--------------------------------------------------------");
-			System.out.println(" 1. 로그인 | 2. 회원가입 | 0. 이전단계 ");
-			System.out.println("--------------------------------------------------------");
-			System.out.println("선택 >>> ");
+			System.out.println(bar.repeat(bar_count));
+			System.out.println(" 1. 로그인 | 2. 회원가입 | 0. 로그아웃 ");
+			System.out.println(bar.repeat(bar_count));
+			System.out.print("선택 >>> ");
+
+			String n = sc.nextLine();
 			System.out.println();
 
-			int n = sc.nextInt();
-
-			if(n == 1) { //로그인
+			if(n.equals("1")) {
 				cm.checkLogin(pm, om);
-			} else if(n == 2) { //회원가입
+			} else if(n.equals("2")) {
 				cm.addList();
 				cm.uploadList();
-			} else if(n == 0) {
+			} else if(n.equals("0")) {
 				run = false;
+				//printMain(cm, pm, om);
 			} else {
 				System.out.println("올바르지 않은 입력값입니다. 다시 입력해주세요.");
 				return;
 			}
+			run = false;
 			System.out.println();
 		}
 
 	}
 
-
 	public void login_a(ProductManager pm, CustomerManager cm, OrdersManager om) {
+
 		boolean run = true;
 		while(run) {
-			System.out.println("2. 기업");
-			System.out.println("--------------------------------------------------------");
+			System.out.println("2. 관리자");
+			System.out.println(bar.repeat(bar_count));
 			System.out.println(" 1. 로그인 | 0. 이전단계 ");
-			System.out.println("--------------------------------------------------------");
-			System.out.println("선택 >>> ");
-			System.out.println();
+			System.out.println(bar.repeat(bar_count));
+			System.out.print("선택 >>> ");
 
-			int n = sc.nextInt();
+			String n = sc.nextLine();
+			System.out.println();
 
 			sc.nextLine();
 
-			if(n == 1) { //로그인
+			if(n.equals("1")) { //로그인
 				System.out.print("ID : ");
 				String id = sc.nextLine();
 
@@ -112,14 +120,87 @@ public class PrintMenu {
 					if(num == 0)
 						run = false;
 				}
+				System.out.println();
 
+			} else if(n.equals("0")) {
+				run = false;
 			} else {
 				System.out.println("올바르지 않은 입력값입니다. 다시 입력해주세요.");
 				return;
 			}
+			run = false;
 			System.out.println();
 		}
+	}
 
+
+
+	public void customer(ProductManager pm, OrdersManager om, String id) { //고객
+		/*
+            1. 상품조회
+            2. 상품구매
+            3. 구매취소
+		 */
+
+		CustomerManager cm = new CustomerManager();
+
+		boolean run = true;
+		while(run) {
+			System.out.println("1. 고객");
+			System.out.println(bar.repeat(bar_count));
+			System.out.println(" 1. 상품조회 | 2. 상품구매 | 3. 구매목록조회 | 4. 구매취소 | 5. 정보수정 | 0. 로그아웃 ");
+			System.out.println(bar.repeat(bar_count));
+			System.out.println("선택 >>> ");
+			System.out.println();
+
+			String n = sc.nextLine();
+
+
+			if(n.equals("1")) {
+				pm.printList();
+			} else if(n.equals("2")) {
+				pm.printList();
+				om.addList(pm,id);
+				om.uploadList();
+			} else if(n.equals("3")) {
+				om.readList_c(id);
+				om.printList_c();
+			} else if(n.equals("4")) {
+				om.deleteList(pm);
+				om.uploadList();
+			} else if(n.equals("5")) {
+				cm.modifyList();
+			} else if(n.equals("0")) {
+				run = false;
+			}
+		}
+	}
+
+
+	public void admin(ProductManager pm, CustomerManager cm, OrdersManager om) {
+
+		boolean run = true;
+		while(run) {
+			System.out.println("2. 관리자");
+			System.out.println(bar.repeat(bar_count));
+			System.out.println(" 1. 상품관리 | 2. 고객관리 | 3. 고객관리 | 0. 이전단계 ");
+			System.out.println(bar.repeat(bar_count));
+			System.out.print("선택 >>> ");
+			System.out.println();
+
+			String n = sc.nextLine();
+			System.out.println();
+
+			if(n.equals("1")) {
+				product(pm);
+			} else if(n.equals("2")) {
+				customer_a(cm);
+			} else if(n.equals("3")) {
+				orders(om);
+			} else if(n.equals("0")) {
+				run = false;
+			}
+		}
 	}
 
 
@@ -127,137 +208,74 @@ public class PrintMenu {
 		boolean run = true;
 		while(run) {
 			System.out.println("1. 상품관리");
-			System.out.println("--------------------------------------------------------");
+			System.out.println(bar.repeat(bar_count));
 			System.out.println(" 1. 조회 | 2. 등록 | 3. 수정 | 4. 삭제 | 0. 이전단계 ");
-			System.out.println("--------------------------------------------------------");
-			System.out.println("선택 >>> ");
+			System.out.println(bar.repeat(bar_count));
+			System.out.print("선택 >>> ");
+
+			String n = sc.nextLine();
 			System.out.println();
 
-			int n = sc.nextInt();
-
-			if(n==1) {
+			if(n.equals("1")) {
 				pm.printList();
-			}else if(n == 2) {
+			}else if(n.equals("2")) {
 				pm.addList();
 				pm.uploadList();
-			} else if(n == 3) {
+			} else if(n.equals("3")) {
 				pm.modifyList();
 				pm.uploadList();
-			} else if(n == 4) {
+			} else if(n.equals("4")) {
 				pm.deleteList();
 				pm.uploadList();
-			} else if(n == 0) {
-				run = false;
-			}
-
-			//상품 리스트 출력 
-			//pm.printList();
-		}
-	}
-
-	public void customer(ProductManager pm, OrdersManager om, String id) { //고객
-		/*
-	      1. 상품조회
-	      2. 상품구매
-	      3. 구매취소
-		 */
-
-		boolean run = true;
-		while(run) {
-			System.out.println("1. 고객");
-			System.out.println("--------------------------------------------------------");
-			System.out.println(" 1. 상품조회 | 2. 상품구매 | 3. 구매목록조회 | 4. 구매취소 | 0. 로그아웃 ");
-			System.out.println("--------------------------------------------------------");
-			System.out.println("선택 >>> ");
-			System.out.println();
-
-			int n = sc.nextInt();
-
-			if(n == 1) {
-				pm.printList();
-			} else if(n == 2) {
-				pm.printList();
-				om.addList(pm,id);
-				om.uploadList();
-			} else if(n == 3) {
-				om.readList_c(id);
-				om.printList_c();
-			} else if(n == 4) {
-				om.deleteList(pm);
-				om.uploadList();
-			} else if(n == 0) {
+			} else if(n.equals("0")) {
 				run = false;
 			}
 		}
+
 	}
 
-	public void admin(ProductManager pm, CustomerManager cm, OrdersManager om) {
 
-		boolean run = true;
-		while(run) {
-			System.out.println("2. 관리자");
-			System.out.println("--------------------------------------------------------");
-			System.out.println(" 1. 상품관리 | 2. 고객관리 | 3. 주문관리 | 0. 이전단계 ");
-			System.out.println("--------------------------------------------------------");
-			System.out.println("선택 >>> ");
-			System.out.println();
-
-			int n = sc.nextInt();
-
-			if(n == 1) {
-				product(pm);
-			} else if(n == 2) {
-				customer_a(cm);
-			} else if(n == 3) {
-				orders(om);
-			} else if(n == 0) {
-				run = false;
-			}
-
-		}
-	}
-
-	public void customer_a(CustomerManager cm){
+	public void customer_a(CustomerManager cm) { //고객관리
 
 		boolean run = true;
 		while(run) {
 			System.out.println("2. 고객관리");
-			System.out.println("--------------------------------------------------------");
-			System.out.println(" 1. 조회 | 0. 이전단계 ");
-			System.out.println("--------------------------------------------------------");
-			System.out.println("선택 >>> ");
+			System.out.println(bar.repeat(bar_count));
+			System.out.println(" 1. 고객조회 | 0. 이전단계 ");
+			System.out.println(bar.repeat(bar_count));
+			System.out.print("선택 >>> ");
+
+			String n = sc.nextLine();
 			System.out.println();
 
-			int n = sc.nextInt();
-
-			if(n == 1) {
+			if(n.equals("1")) {
 				cm.printList();
-			} else if(n == 0) {
+			}  else if(n.equals("0")) {
 				run = false;
 			}
 		}
+		System.out.println();
 	}
-	
-	// 환불 승인 구현해야함
-	
-	public void orders(OrdersManager om) {
+
+	public void orders(OrdersManager om) {//관리자 주문 조회
+
 		boolean run = true;
 		while(run) {
 			System.out.println("3. 주문관리");
-			System.out.println("--------------------------------------------------------");
-			System.out.println(" 1. 조회 | 0. 이전단계 ");
-			System.out.println("--------------------------------------------------------");
-			System.out.println("선택 >>> ");
+			System.out.println(bar.repeat(bar_count));
+			System.out.println(" 1. 주문조회 | 0. 이전단계 ");
+			System.out.println(bar.repeat(bar_count));
+			System.out.print("선택 >>> ");
+
+			String n = sc.nextLine();
 			System.out.println();
 
-			int n = sc.nextInt();
-
-			if(n == 1) {
+			if(n.equals("1")) {
 				om.printList();
-			} else if(n == 0) {
+			}  else if(n.equals("0")) {
 				run = false;
 			}
 		}
+		System.out.println();
 	}
 }
-
