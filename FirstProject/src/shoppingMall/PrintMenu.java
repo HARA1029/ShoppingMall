@@ -63,7 +63,7 @@ public class PrintMenu {
 
 			System.out.println("1. 고객");
 			System.out.println(bar.repeat(bar_count));
-			System.out.println(" 1. 로그인 | 2. 회원가입 | 0. 로그아웃 ");
+			System.out.println(" 1. 로그인 | 2. 회원가입 | 3. 회원탈퇴 0. 이전단계 ");
 			System.out.println(bar.repeat(bar_count));
 			System.out.print("선택 >>> ");
 
@@ -74,6 +74,9 @@ public class PrintMenu {
 				cm.checkLogin(pm, om);
 			} else if(n.equals("2")) {
 				cm.addList();
+				cm.uploadList();
+			} else if(n.equals("3")) {
+				cm.deleteList();
 				cm.uploadList();
 			} else if(n.equals("0")) {
 				run = false;
@@ -101,7 +104,7 @@ public class PrintMenu {
 			String n = sc.nextLine();
 			System.out.println();
 
-			sc.nextLine();
+			//sc.nextLine();
 
 			if(n.equals("1")) { //로그인
 				System.out.print("ID : ");
@@ -114,11 +117,8 @@ public class PrintMenu {
 					admin(pm, cm, om);
 
 				} else {
-					System.out.println("관리자의 정보가 일치하지 않습니다. 다시 입력해주세요.");
-					System.out.print("관리자가 아니시면 '0' 를 입력해주세요.");
-					int num = sc.nextInt();
-					if(num == 0)
-						run = false;
+					System.out.println("관리자의 정보가 일치하지 않습니다.");
+					continue;
 				}
 				System.out.println();
 
@@ -126,7 +126,7 @@ public class PrintMenu {
 				run = false;
 			} else {
 				System.out.println("올바르지 않은 입력값입니다. 다시 입력해주세요.");
-				return;
+				continue;
 			}
 			run = false;
 			System.out.println();
@@ -148,28 +148,32 @@ public class PrintMenu {
 		while(run) {
 			System.out.println("1. 고객");
 			System.out.println(bar.repeat(bar_count));
-			System.out.println(" 1. 상품조회 | 2. 상품구매 | 3. 구매목록조회 | 4. 구매취소 | 5. 정보수정 | 0. 로그아웃 ");
+			System.out.println(" 1. 상품조회 | 2. 상품구매 | 3. 구매내역 | 4. 구매취소 | 5. 정보수정 | 0. 로그아웃 ");
 			System.out.println(bar.repeat(bar_count));
 			System.out.println("선택 >>> ");
 			System.out.println();
 
 			String n = sc.nextLine();
 
-
 			if(n.equals("1")) {
 				pm.printList();
 			} else if(n.equals("2")) {
 				pm.printList();
 				om.addList(pm,id);
+				pm.uploadList();
 				om.uploadList();
 			} else if(n.equals("3")) {
 				om.readList_c(id);
 				om.printList_c();
 			} else if(n.equals("4")) {
+				om.readList_c(id);
+				om.printList_c();
 				om.deleteList(pm);
 				om.uploadList();
 			} else if(n.equals("5")) {
+				cm.readList();
 				cm.modifyList();
+				cm.uploadList();
 			} else if(n.equals("0")) {
 				run = false;
 			}
@@ -183,13 +187,13 @@ public class PrintMenu {
 		while(run) {
 			System.out.println("2. 관리자");
 			System.out.println(bar.repeat(bar_count));
-			System.out.println(" 1. 상품관리 | 2. 고객관리 | 3. 고객관리 | 0. 이전단계 ");
+			System.out.println(" 1. 상품관리 | 2. 고객관리 | 3. 주문관리 | 0. 이전단계 ");
 			System.out.println(bar.repeat(bar_count));
 			System.out.print("선택 >>> ");
 			System.out.println();
 
 			String n = sc.nextLine();
-			System.out.println();
+			//System.out.println();
 
 			if(n.equals("1")) {
 				product(pm);
@@ -209,7 +213,7 @@ public class PrintMenu {
 		while(run) {
 			System.out.println("1. 상품관리");
 			System.out.println(bar.repeat(bar_count));
-			System.out.println(" 1. 조회 | 2. 등록 | 3. 수정 | 4. 삭제 | 0. 이전단계 ");
+			System.out.println(" 1. 상품조회 | 2. 상품등록 | 3. 상품수정 | 4. 상품삭제 | 0. 이전단계 ");
 			System.out.println(bar.repeat(bar_count));
 			System.out.print("선택 >>> ");
 
@@ -225,6 +229,7 @@ public class PrintMenu {
 				pm.modifyList();
 				pm.uploadList();
 			} else if(n.equals("4")) {
+				pm.printList();
 				pm.deleteList();
 				pm.uploadList();
 			} else if(n.equals("0")) {

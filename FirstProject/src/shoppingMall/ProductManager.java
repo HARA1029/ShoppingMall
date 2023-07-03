@@ -2,9 +2,11 @@ package shoppingMall;
 
 import java.util.*;
 import java.io.*;
+import java.text.DecimalFormat;
 
 
 public class ProductManager {
+
 
 	private LinkedHashMap<Integer,Product> productList = new LinkedHashMap<Integer,Product>();
 
@@ -18,12 +20,27 @@ public class ProductManager {
 
 		Scanner sc = new Scanner(System.in);
 
-		// 상품ID 마지막값 + 1 연구
+		// 상품ID 설정 방법 조금 아쉬움
+		// 마지막 상품ID +1 로 설정
 
-		int productID = productList.size()+1;
+		int lastID =0;
+		if(!productList.isEmpty()) {
+
+			Integer[] keys = productList.keySet().toArray(new Integer[0]);
+			lastID = keys[keys.length - 1];
+		}
+
+		int productID = lastID+1;
 
 		System.out.print("상품명 : ");
 		String productName = sc.nextLine();
+
+		if(productName.contains(" ") == true) {
+			System.out.println("공백은 입력할 수 없습니다.");
+			productName = productName.replaceAll(" ", "");
+			System.out.println("공백제거 후 " + productName + "로 변경하여 입력됩니다.");
+			System.out.println();   
+		}
 
 		int price=0;
 		String tmp_p="";
@@ -39,7 +56,7 @@ public class ProductManager {
 
 		//System.out.print("가격 : ");
 		//int price = sc.nextInt();
-		
+
 		int stock=0;
 		String tmp_s="";
 
@@ -91,8 +108,6 @@ public class ProductManager {
 				bw.write(aData);
 				bw.write(NEWLINE);
 
-				//bw.flush();
-				//bw.close();
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -139,12 +154,13 @@ public class ProductManager {
 		//records = ((1,a,b,c),(2,d,e,f),(3,g,h,i))
 		//values = (1,a,b,c)
 
-		//return productList;
 	}
 
 	public void printList() {
 
-		System.out.println(" ID  상품명  가격  재고");
+		System.out.println(" ID   상품명   가격   재고");
+		System.out.println("----------------------");
+
 
 		//StringBuilder sb = new StringBuilder ();
 
@@ -157,12 +173,12 @@ public class ProductManager {
 			int id = productList.get(key).getProductID();
 			String name = productList.get(key).getProductName();
 			int price = productList.get(key).getPrice();
+			String deci = setDecimalFormat(price); 
 			int stock = productList.get(key).getStock();
 
-			System.out.printf("%3d%5s%5d%5d\n",id,name,price,stock);
+			System.out.printf("%3d %5s %6s %5d\n",id,name,deci,stock);
 			//sb.append(Integer.toString(id)).append(' ').append(name).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(stock)).append("\n");
 		}
-
 		//System.out.println(sb);
 	}
 
@@ -271,9 +287,15 @@ public class ProductManager {
 		String ans;
 		Scanner sc = new Scanner(System.in);
 
-		System.out.println("삭제할 ID를 입력하세요.");
+		String tmp="";
 
-		String tmp = sc.nextLine();
+		do {
+			System.out.println("삭제할 ID를 입력하세요.");
+
+			tmp=sc.nextLine();			
+
+		}while(!ip.checkInput(tmp));
+		
 		int delete_pid = Integer.parseInt(tmp);
 
 		if(productList.containsKey(delete_pid)==true) {
@@ -288,5 +310,9 @@ public class ProductManager {
 		}else {
 			System.out.println("해당 ID를 찾을 수 없습니다.");
 		}
+	}
+
+	static String setDecimalFormat(int price) {// 가격 , 구분
+		return new DecimalFormat().format(price);
 	}
 }

@@ -20,9 +20,17 @@ public class OrdersManager {
 
 		// 구매 리스트 추가
 
-		// 주문ID 마지막값 + 1 연구
+		// 마지막 주문ID + 1
 
-		int ordersID = ordersList.size()+1;
+		int lastID =0;
+		if(!ordersList.isEmpty()) {
+			System.out.println(ordersList.size());
+			
+			Integer[] keys = ordersList.keySet().toArray(new Integer[0]);
+			lastID = keys[keys.length - 1];
+		}
+		
+		int ordersID = lastID+1;
 
 		Scanner sc= new Scanner(System.in);
 
@@ -60,13 +68,16 @@ public class OrdersManager {
 					//sc.nextLine();
 					//System.out.print("결제 수단 번호를 선택하세요");
 					//String payment = sc.next();
+					
+					//상품ID로 상품명 가져오기
+					String productName = pd.getProductName();
 
 					//상품ID로 가격 가져오기
 					int price = pd.getPrice();
 
 					int total = price*count;
 
-					Orders od = new Orders(ordersID, customID, productID, price, count, total);
+					Orders od = new Orders(ordersID, customID, productID, productName, price, count, total);
 
 					ordersList.put(od.getOrdersID(),od);
 
@@ -102,7 +113,7 @@ public class OrdersManager {
 			//이어쓰기
 			//bw = new BufferedWriter(new FileWriter(csv,true));
 
-			bw.write("ordersID,customoerID,productID,price,count,total");
+			bw.write("ordersID,customoerID,productID,productName,price,count,total");
 			bw.write(NEWLINE);
 
 			Iterator<Integer> keys = ordersList.keySet().iterator();
@@ -110,13 +121,11 @@ public class OrdersManager {
 				Integer key = keys.next();
 				String aData;
 
-				aData = ordersList.get(key).getOrdersID() +","+ordersList.get(key).getCustomID()+","+ordersList.get(key).getProductID()+","+ordersList.get(key).getPrice() + "," + ordersList.get(key).getCount() + "," + ordersList.get(key).getTotal();
+				aData = ordersList.get(key).getOrdersID() +","+ordersList.get(key).getCustomID()+","+ordersList.get(key).getProductID()+","+ordersList.get(key).getProductName()+","+ordersList.get(key).getPrice() + "," + ordersList.get(key).getCount() + "," + ordersList.get(key).getTotal();
 
 				bw.write(aData);
 				bw.write(NEWLINE);
 
-				//bw.flush();
-				//bw.close();
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -144,7 +153,7 @@ public class OrdersManager {
 
 		try(BufferedReader br = new BufferedReader(new FileReader(csv))){
 
-			String[] values = new String[6];
+			String[] values = new String[7];
 
 			while((line = br.readLine())!= null) {
 				values = line.split(",");
@@ -152,7 +161,7 @@ public class OrdersManager {
 			}
 
 			for(int i=1; i<records.size();i++) {
-				Orders od = new Orders(Integer.parseInt(records.get(i).get(0)),records.get(i).get(1),Integer.parseInt(records.get(i).get(2)),Integer.parseInt(records.get(i).get(3)), Integer.parseInt(records.get(i).get(4)), Integer.parseInt(records.get(i).get(5)));
+				Orders od = new Orders(Integer.parseInt(records.get(i).get(0)),records.get(i).get(1),Integer.parseInt(records.get(i).get(2)),records.get(i).get(3),Integer.parseInt(records.get(i).get(4)), Integer.parseInt(records.get(i).get(5)), Integer.parseInt(records.get(i).get(6)));
 
 				ordersList.put(od.getOrdersID(), od);
 			}
@@ -180,7 +189,7 @@ public class OrdersManager {
 			// custom_ordersList 초기화
 			custom_ordersList.clear();
 
-			String[] values = new String[6];
+			String[] values = new String[7];
 
 			while((line = br.readLine())!= null) {
 				values = line.split(",");
@@ -193,9 +202,8 @@ public class OrdersManager {
 
 				if( customID.equals(cid) ) {
 
-					Orders od = new Orders(Integer.parseInt(records.get(i).get(0)),records.get(i).get(1),Integer.parseInt(records.get(i).get(2)),Integer.parseInt(records.get(i).get(3)), Integer.parseInt(records.get(i).get(4)), Integer.parseInt(records.get(i).get(5)));
+					Orders od = new Orders(Integer.parseInt(records.get(i).get(0)),records.get(i).get(1),Integer.parseInt(records.get(i).get(2)),records.get(i).get(3),Integer.parseInt(records.get(i).get(4)), Integer.parseInt(records.get(i).get(5)), Integer.parseInt(records.get(i).get(6)));
 
-					//중복키라 중복넣기가 불가;;; 리스트로 구현하자
 					custom_ordersList.add(od);	
 				}
 			}
@@ -214,16 +222,20 @@ public class OrdersManager {
 		StringBuilder sb = new StringBuilder ();
 
 		for(Orders e : custom_ordersList) {
+			
+			System.out.println(" 주문ID   상품ID   상품명   상품가격    수량    총액");
+			System.out.println("------------------------------------------");
 
 			int id = e.getOrdersID();
-			String customID = e.getCustomID();
 			int productID = e.getProductID();
+			String productName = e.getProductName();
 			int price =	e.getPrice();
 			int count = e.getCount();
 			int total = e.getTotal();
 
-			sb.append(Integer.toString(id)).append(' ').append(customID).append(' ').append(Integer.toString(productID)).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(count)).append(' ').append(Integer.toString(total)).append("\n");
+			System.out.printf("%4d %6d %6s %7d %6d %7d\n",id,productID,productName,price,count,total);
 
+			//sb.append(Integer.toString(id)).append(' ').append(Integer.toString(productID)).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(count)).append(' ').append(Integer.toString(total)).append("\n");
 		}
 
 		//		Iterator<Orders> iter = custom_ordersList.iterator();
@@ -240,12 +252,15 @@ public class OrdersManager {
 		//			sb.append(Integer.toString(ordersid)).append(' ').append(Integer.toString(customID)).append(' ').append(Integer.toString(productID)).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(count)).append(' ').append(Integer.toString(total)).append("\n");
 		//		}
 
-		System.out.println(sb);
+		//System.out.println(sb);
 	}
 
 	public void printList() {
 
 		StringBuilder sb = new StringBuilder ();
+		
+		System.out.println(" 주문ID  고객ID  상품ID  상품명  상품가격   수량   총액");
+		System.out.println("--------------------------------------------");
 
 		Iterator<Integer> keys = ordersList.keySet().iterator();
 
@@ -256,14 +271,17 @@ public class OrdersManager {
 			int id = ordersList.get(key).getOrdersID();
 			String customID = ordersList.get(key).getCustomID();
 			int productID = ordersList.get(key).getProductID();
+			String productName = ordersList.get(key).getProductName();
 			int price = ordersList.get(key).getPrice();
 			int count = ordersList.get(key).getCount();
 			int total = ordersList.get(key).getTotal();
 
-			sb.append(Integer.toString(id)).append(' ').append(customID).append(' ').append(Integer.toString(productID)).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(count)).append(' ').append(Integer.toString(total)).append("\n");
+			System.out.printf("%4d %6s %6d %6s %7d %6d %8d\n",id,customID,productID,productName,price,count,total);
+			
+			//sb.append(Integer.toString(id)).append(' ').append(customID).append(' ').append(Integer.toString(productID)).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(count)).append(' ').append(Integer.toString(total)).append("\n");
 		}
 
-		System.out.println(sb);
+		//System.out.println(sb);
 	}
 
 	public void searchInfo(int id) {
@@ -279,9 +297,16 @@ public class OrdersManager {
 		String ans;
 		Scanner sc = new Scanner(System.in);
 
-		System.out.println("주문번호 입력 : ");
 
-		String tmp = sc.nextLine();
+		String tmp="";
+		
+		do {
+			System.out.println("주문번호 입력 : ");
+			
+			tmp=sc.nextLine();			
+			
+		}while(!ip.checkInput(tmp));
+		
 		int delete_id = Integer.parseInt(tmp);
 
 		if(ordersList.containsKey(delete_id)==true) {

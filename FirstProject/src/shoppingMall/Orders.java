@@ -5,15 +5,17 @@ public class Orders {
 	private int ordersID;
 	private String customID;
 	private int productID;
+	private String productName;
 	private int price;
 	private int count;
 	private int total;
 	//private String payment;
 	
-	Orders(int ordersID,String customID,int productID,int price, int count, int total){
+	Orders(int ordersID,String customID,int productID,String productName, int price, int count, int total){
 		this.ordersID = ordersID;
 		this.customID = customID;
 		this.productID = productID;
+		this.productName = productName;
 		this.price = price;
 		this.count = count;
 		this.total = total;
@@ -39,6 +41,13 @@ public class Orders {
 	}
 	public void setProductID(int productID) {
 		this.productID=productID;
+	}
+	
+	public String getProductName(){
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName=productName;
 	}
 	
 	public int getPrice(){
