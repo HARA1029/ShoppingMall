@@ -142,7 +142,7 @@ public class CustomerManager {
 			System.out.print("ID : ");
 			id = sc.nextLine();
 
-			System.out.println(); // 없으면 ID, PW 붙어서 나옴
+			//System.out.println(); // 없으면 ID, PW 붙어서 나옴
 			System.out.print("PW : ");
 			String pw = sc.nextLine();
 

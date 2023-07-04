@@ -23,15 +23,15 @@ public class OrdersManager {
 
 	// 구매 리스트 추가
 	public void addList(ProductManager pm, String id){
-		
+
 		Scanner sc = new Scanner(System.in);
 
 		boolean run = true;
 		while(run) {
-			
+
 			// 구매 리스트의 마지막 주문번호 획득
 			int lastID = 0;
-			
+
 			if(!ordersList.isEmpty()) {
 				Integer[] keys = ordersList.keySet().toArray(new Integer[0]);
 				lastID = keys[keys.length - 1];
@@ -43,7 +43,7 @@ public class OrdersManager {
 			String customID = id;
 
 			String tmp = ""; // 정수값 판별을 위한 입력 변수
-			
+
 			// 상품ID를 checkInput메소드로 정수값만 받기
 
 			do {
@@ -93,13 +93,13 @@ public class OrdersManager {
 						int price = pd.getPrice();
 						String deci = setDecimalFormat(price); 
 						int total = price*count;
-						
+
 						// 구매정보를 토대로 객체 생성
 
 						Orders od = new Orders(ordersID, customID, productID, productName, price, count, total);
 
 						// 객체를 구매리스트에 추가
-						
+
 						ordersList.put(od.getOrdersID(),od);
 
 						//재고 수량 감소
@@ -110,7 +110,19 @@ public class OrdersManager {
 						System.out.println();
 						System.out.println("   주문ID     상품ID     상품명    상품가격     수량     총액");
 						System.out.println(bar.repeat(barCount));
-						System.out.printf("   %4s %6d %6s %7s %6d %7d\n",ordersID,productID,productName,deci,count,total);
+						System.out.printf("   %4s %6d %6s %7s %6d %7d\n",ordersID, productID, productName, deci, count, total);
+
+						//추가 구매시 제품 구매 수량이 기존 수량에 추가해서 출력되지 않음
+						System.out.println("계속 구매하시려면 '1', 구매를 끝내시려면 '0'을 눌러주세요.");
+						System.out.print("선택 >>> ");
+						String num = sc.nextLine();
+
+						if(num.equals("1")) {
+							continue;
+
+						} else if(num.equals("0")) {
+							run = false;
+						}
 
 					}
 					// 구매할 상품 수량이 재고보다 많을 때 구매 불가
@@ -134,7 +146,7 @@ public class OrdersManager {
 
 		BufferedWriter bw = null;
 
-		String NEWLINE = System.lineSeparator();
+		String newLine = System.lineSeparator();
 
 		try {
 			//덮어쓰기
@@ -144,18 +156,26 @@ public class OrdersManager {
 			//bw = new BufferedWriter(new FileWriter(csv,true));
 
 			bw.write("ordersID,customoerID,productID,productName,price,count,total");
-			bw.write(NEWLINE);
+			bw.write(newLine);
 
 			Iterator<Integer> keys = ordersList.keySet().iterator();
-			
+
 			while(keys.hasNext()) {
 				Integer key = keys.next();
 				String aData;
+				
+				int ordersID = ordersList.get(key).getOrdersID();
+				String customID = ordersList.get(key).getCustomID();
+				int productID = ordersList.get(key).getProductID();
+				String productName = ordersList.get(key).getProductName();
+				int price = ordersList.get(key).getPrice();
+				int count = ordersList.get(key).getCount();
+				int total = ordersList.get(key).getTotal();
 
-				aData = ordersList.get(key).getOrdersID() +","+ordersList.get(key).getCustomID()+","+ordersList.get(key).getProductID()+","+ordersList.get(key).getProductName()+","+ordersList.get(key).getPrice() + "," + ordersList.get(key).getCount() + "," + ordersList.get(key).getTotal();
+				aData = ordersID + "," + customID + "," + productID + "," + productName + "," + price + "," + count + "," + total;
 
 				bw.write(aData);
-				bw.write(NEWLINE);
+				bw.write(newLine);
 
 			}
 		} catch (FileNotFoundException e) {
@@ -192,8 +212,16 @@ public class OrdersManager {
 
 
 			for(int i=1; i<records.size();i++) {
+				
+				int ordersID = Integer.parseInt(records.get(i).get(0));
+				String customID = records.get(i).get(1);
+				int productID = Integer.parseInt(records.get(i).get(2));
+				String productName = records.get(i).get(3);
+				int price = Integer.parseInt(records.get(i).get(4));
+				int count = Integer.parseInt(records.get(i).get(5));
+				int total = Integer.parseInt(records.get(i).get(6));
 
-				Orders od = new Orders(Integer.parseInt(records.get(i).get(0)),records.get(i).get(1),Integer.parseInt(records.get(i).get(2)),records.get(i).get(3),Integer.parseInt(records.get(i).get(4)), Integer.parseInt(records.get(i).get(5)), Integer.parseInt(records.get(i).get(6)));
+				Orders od = new Orders(ordersID, customID, productID, productName, price, count, total);
 
 				ordersList.put(od.getOrdersID(), od);
 			}
@@ -208,11 +236,11 @@ public class OrdersManager {
 
 		// customOrdersList 초기화
 		customOrdersList.clear();
-		
+
 		// 고객ID로 구매정보를 찾아서 customOrdersList에 추가
 
 		Iterator<Integer> keys = ordersList.keySet().iterator();
-	
+
 		while(keys.hasNext()) {
 
 			int key=keys.next();
@@ -240,13 +268,13 @@ public class OrdersManager {
 
 		System.out.println(" 주문ID     상품ID     상품명     상품가격      수량      총액");
 		System.out.println(bar.repeat(barCount));
-		
+
 		Iterator<Orders> iter = customOrdersList.iterator();
 
 		while(iter.hasNext()) {
 
 			Orders od =iter.next();
-			
+
 			int ordersid = od.getOrdersID();
 			int productID = od.getProductID();
 			String productName = od.getProductName();
@@ -329,7 +357,7 @@ public class OrdersManager {
 
 				int deleteID = Integer.parseInt(tmp);
 
-				
+
 				// 삭제할 주문ID 존재 여부 확인
 				int idx=searchOrders(deleteID);
 
@@ -353,7 +381,7 @@ public class OrdersManager {
 				else {
 					System.out.println("해당 ID를 찾을 수 없습니다. 다시 입력해주세요.");
 					System.out.println("주문취소를 안하시려면 '0'을 눌러서 뒤로 나가주세요.");
-					
+
 					ans = sc.nextLine();
 					if(ans.equals("0")) {
 						return;
