@@ -7,23 +7,25 @@ import java.text.DecimalFormat;
 
 public class ProductManager {
 
-
+	// 상품 리스트
 	private LinkedHashMap<Integer,Product> productList = new LinkedHashMap<Integer,Product>();
 
+	// product.csv 파일 경로
 	File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\product.csv");
 
+	// 입력값 체크(정수) 객체 생성
 	InputCheck ip = new InputCheck();
 
+	// 새로운 상품 등록
 	public void addList() {
-
-		// 상품 등록
 
 		Scanner sc = new Scanner(System.in);
 
 		// 상품ID 설정 방법 조금 아쉬움
-		// 마지막 상품ID +1 로 설정
+		// 새로 들어갈 상품ID : 상품리스트에 들어있는 마지막 상품ID +1 로 설정
 
 		int lastID =0;
+
 		if(!productList.isEmpty()) {
 
 			Integer[] keys = productList.keySet().toArray(new Integer[0]);
@@ -32,8 +34,12 @@ public class ProductManager {
 
 		int productID = lastID+1;
 
+		// 상품명 입력
+
 		System.out.print("상품명 : ");
 		String productName = sc.nextLine();
+
+		// 상품명 공백 처리
 
 		if(productName.contains(" ") == true) {
 			System.out.println("공백은 입력할 수 없습니다.");
@@ -42,35 +48,36 @@ public class ProductManager {
 			System.out.println();   
 		}
 
-		int price=0;
-		String tmp_p="";
+		int price=0;	// 실질 가격(정수)
+		String tmpPrice="";	// 정수값 판별을 위한 입력 변수
+
+		// 가격을 checkInput메소드로 정수값만 받기
 
 		do {
 			System.out.print("가격 : ");
 
-			tmp_p=sc.nextLine();			
+			tmpPrice=sc.nextLine();			
 
-		}while(!ip.checkInput(tmp_p));
+		}while(!ip.checkInput(tmpPrice));
 
-		price=Integer.parseInt(tmp_p);
+		price=Integer.parseInt(tmpPrice);
 
-		//System.out.print("가격 : ");
-		//int price = sc.nextInt();
 
-		int stock=0;
-		String tmp_s="";
+		int stock=0;	// 실질 재고(정수)
+		String tmpStock="";	// 정수값 판별을 위한 입력 변수
+
+		// 재고를 checkInput메소드로 정수값만 받기
 
 		do {
 			System.out.print("재고 : ");
 
-			tmp_s=sc.nextLine();			
+			tmpStock=sc.nextLine();			
 
-		}while(!ip.checkInput(tmp_s));
+		}while(!ip.checkInput(tmpStock));
 
-		stock=Integer.parseInt(tmp_s);
+		stock=Integer.parseInt(tmpStock);
 
-		//System.out.print("재고 : ");
-		//int stock = sc.nextInt();
+		// 설정된 값을 바탕으로 product 객체 셍성 -> 객체를 productList에 추가
 
 		Product pd = new Product(productID, productName, price, stock);
 
@@ -81,12 +88,13 @@ public class ProductManager {
 
 	}
 
+
+	// 상품리스트를 product파일에 저장
 	public void uploadList() {
 
-		//File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\product.csv");
 		BufferedWriter bw = null;
 
-		String NEWLINE = System.lineSeparator();
+		String newLine = System.lineSeparator();	// 개행 문자열
 
 		try {
 			//덮어쓰기
@@ -95,20 +103,28 @@ public class ProductManager {
 			//이어쓰기
 			//bw = new BufferedWriter(new FileWriter(csv,true));
 
+			// 파일 상단 메뉴
 			bw.write("productID,productName,price,stock");
-			bw.write(NEWLINE);
+			bw.write(newLine);
 
+			// 상품 리스트를 파일에 입력
 			Iterator<Integer> keys = productList.keySet().iterator();
+
 			while(keys.hasNext()) {
 				Integer key = keys.next();
 				String aData;
 
-				aData = productList.get(key).getProductID() +","+productList.get(key).getProductName()+","+productList.get(key).getPrice()+","+productList.get(key).getStock();
+				int productID = productList.get(key).getProductID();
+				String productName = productList.get(key).getProductName();
+				int price = productList.get(key).getPrice();
+				int stock = productList.get(key).getStock();
+
+				aData = productID + "," + productName+"," + price + "," + stock;
 
 				bw.write(aData);
-				bw.write(NEWLINE);
-
+				bw.write(newLine);
 			}
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch(IOException e) {
@@ -125,13 +141,14 @@ public class ProductManager {
 		}
 	}
 
+	// product파일에서 상품리스트 불러오기
 	public void readList() {
-
-		//File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\product.csv");
 
 		List<List<String>> records = new ArrayList<>();
 
 		String line="";
+
+		// 파일에서 받아온 product값을 상품 리스트에 저장
 
 		try(BufferedReader br = new BufferedReader(new FileReader(csv))){
 
@@ -143,26 +160,28 @@ public class ProductManager {
 			}
 
 			for(int i=1; i<records.size();i++) {
-				Product prod = new Product(Integer.parseInt(records.get(i).get(0)),records.get(i).get(1),Integer.parseInt(records.get(i).get(2)),Integer.parseInt(records.get(i).get(3)));
-				//productList.add(prod);
-				productList.put(prod.getProductID(), prod);
+
+				int productID = Integer.parseInt(records.get(i).get(0));
+				String productName = records.get(i).get(1);
+				int price = Integer.parseInt(records.get(i).get(2));
+				int stock = Integer.parseInt(records.get(i).get(3));
+
+				// 파일에서 받아온 정보로 product 객체 생성
+				Product pd = new Product(productID, productName, price, stock);
+
+				// 생성한 객체를 productList에 추가
+				productList.put(pd.getProductID(), pd);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		//records = ((1,a,b,c),(2,d,e,f),(3,g,h,i))
-		//values = (1,a,b,c)
-
 	}
 
+	// 상품리스트 출력
 	public void printList() {
 
-		System.out.println(" ID   상품명   가격   재고");
-		System.out.println("----------------------");
-
-
-		//StringBuilder sb = new StringBuilder ();
+		System.out.println("   ID       상품명       가격       재고");
+		System.out.println("--------------------------------------");
 
 		Iterator<Integer> keys=productList.keySet().iterator();
 
@@ -176,15 +195,13 @@ public class ProductManager {
 			String deci = setDecimalFormat(price); 
 			int stock = productList.get(key).getStock();
 
-			System.out.printf("%3d %5s %6s %5d\n",id,name,deci,stock);
-			//sb.append(Integer.toString(id)).append(' ').append(name).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(stock)).append("\n");
-		}
-		//System.out.println(sb);
+			System.out.printf("%5d %8s %10s %9d\n",id,name,deci,stock);
+
+		} System.out.println();
 	}
 
+	// 상품ID 검색 및 해당 상품 정보 반환
 	public Product searchInfo(int id) {
-
-		// 상품 ID로 검색
 
 		String productName="";
 		int price=0;
@@ -204,9 +221,8 @@ public class ProductManager {
 		return pd;
 	}
 
-	public boolean check_PID(int id) {
-
-		// 상품 ID 존재 여부 검사
+	// 상품 ID 존재 여부 검사
+	public boolean checkPID(int id) {
 
 		boolean result=false;
 
@@ -217,6 +233,7 @@ public class ProductManager {
 		return result;
 	}
 
+	// 재고 변동시(구매/환불) 재고 수량 변경
 	public void modifyStock(Product pd,int count) {
 
 		int id = pd.getProductID();
@@ -224,95 +241,127 @@ public class ProductManager {
 		int price = pd.getPrice();
 		int stock = pd.getStock() + count;
 
-		if(productList.containsKey(id)==true) {
+		// 해당 상품의 재고 변경
 
-			//String productName = productList.get(id).getProductName();
+		pd = new Product(id, productName, price, stock);
 
-			Product m_product = new Product(id, productName, price, stock);
+		productList.replace(id,pd);
 
-			productList.replace(id,m_product);
-
-			//System.out.println("수정이 완료되었습니다.");
-		}
-		else {
-			System.out.println("재고 변경 오류");
-		}
 	}
 
+	// 상품 정보 수정
 	public void modifyList(){
-		// 상품 정보 수정
 
 		Scanner sc = new Scanner(System.in);
 
-		System.out.println("상품정보를 수정할 ID를 입력해주세요.");
-		System.out.println("ID : ");
 
-		String tmp = sc.nextLine();
-		int modify_id = Integer.parseInt(tmp);
+		String tmp=""; // 정수값 판별을 위한 입력 변수
 
-		if(productList.containsKey(modify_id)==true) {
-
-			sc.nextLine();
-			System.out.print("수정할 상품명 : ");
-			String getProductName = sc.nextLine();
-
-			//여기 문제
-			System.out.print("수정할 가격 : ");
-			String tmp_p = sc.nextLine();
-			int getPrice = Integer.parseInt(tmp_p);
-
-			//여기 문제
-			System.out.print("수정할 재고 : ");
-			String tmp_s = sc.nextLine();
-			int getStock = Integer.parseInt(tmp_s);
-
-			Product m_product = new Product(modify_id, getProductName, getPrice, getStock);
-
-			productList.replace(modify_id,m_product);
-
-			System.out.println("수정이 완료되었습니다.");
-
-		}
-		else {
-			System.out.println("해당 ID를 찾을 수 없습니다.");
-		}
-	}
-
-	public void deleteList(){
-
-		// 상품 정보 삭제
-
-		//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-		String ans;
-		Scanner sc = new Scanner(System.in);
-
-		String tmp="";
-
+		// 가격을 checkInput메소드로 정수값만 받기
 		do {
-			System.out.println("삭제할 ID를 입력하세요.");
+			System.out.println("상품정보를 수정할 ID를 입력해주세요.");
 
 			tmp=sc.nextLine();			
 
 		}while(!ip.checkInput(tmp));
-		
-		int delete_pid = Integer.parseInt(tmp);
 
-		if(productList.containsKey(delete_pid)==true) {
+		int modifyID = Integer.parseInt(tmp);
 
-			System.out.println("정말 삭제하시겠습니까?(y/n)");
-			ans = sc.next();
+		// 수정할 상품ID 존재 여부 검사 후, 다음 단계 진행
+		if(productList.containsKey(modifyID)==true) {
 
-			if(ans.equals("y"))
-				productList.remove(delete_pid);
-			else
-				return;
-		}else {
+			sc.nextLine();
+
+			System.out.print("수정할 상품명 : ");
+			String productName = sc.nextLine();
+
+
+			String tmpPrice="";	// 정수값 판별을 위한 입력 변수
+
+			// 수정할 가격을 checkInput메소드로 정수값만 받기
+			do {
+				System.out.print("수정할 가격 : ");
+
+				tmpPrice=sc.nextLine();			
+
+			}while(!ip.checkInput(tmpPrice));
+
+			int price = Integer.parseInt(tmpPrice);
+
+			String tmpStock="";	// 정수값 판별을 위한 입력 변수
+
+			// 수정할 재고를 checkInput메소드로 정수값만 받기
+			do {
+				System.out.print("수정할 재고 : ");
+
+				tmpStock=sc.nextLine();			
+
+			}while(!ip.checkInput(tmpStock));
+
+			int stock = Integer.parseInt(tmpStock);
+
+			// 수정한 정보로 product 객체 생성
+			Product pd = new Product(modifyID, productName, price, stock);
+
+			// 해당ID의 기존 상품정보를 수정한 정보의 product로 변경
+			productList.replace(modifyID,pd);
+
+			System.out.println("수정이 완료되었습니다.");
+		}
+		else {
 			System.out.println("해당 ID를 찾을 수 없습니다.");
 		}
 	}
 
-	static String setDecimalFormat(int price) {// 가격 , 구분
+	// 상품 정보 삭제
+	public void deleteList(){
+
+		Scanner sc = new Scanner(System.in);
+
+		String ans;   // 최종삭제 의사 변수 (y/n)
+		boolean run = true;
+		String tmp = "";   // 정수값 판별을 위한 입력 변수
+
+		while(run) {
+			// 삭제할 ID를 checkInput메소드로 정수값만 받기
+
+			do {
+				System.out.println("삭제할 ID를 입력하세요.");
+
+				tmp = sc.nextLine();         
+
+			} while(!ip.checkInput(tmp));
+
+
+			int deleteID = Integer.parseInt(tmp);
+
+			// 삭제할 상품ID 존재 여부 검사 후, 다음 단계 진행
+			if(productList.containsKey(deleteID) == true) {
+
+				System.out.println("정말 삭제하시겠습니까?(y/n)");
+				ans = sc.nextLine();
+
+				if(ans.equals("y"))
+					productList.remove(deleteID);
+				else
+					return;
+			} else {
+				System.out.println("해당 ID를 찾을 수 없습니다. 다시 입력해주세요.");
+				System.out.println("상품삭제를 안하시려면 '0'을 눌러서 뒤로 나가주세요.");
+				ans = sc.nextLine();
+				if(ans.equals("0")) {
+					return;
+				} else {
+					continue;
+				}
+			}
+			run = false;
+		}
+		System.out.println();
+	}
+
+	// 통화 단위 ',' 추가해서 문자열로 만들기
+	public String setDecimalFormat(int price) {
 		return new DecimalFormat().format(price);
 	}
 }

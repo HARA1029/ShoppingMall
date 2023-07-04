@@ -2,106 +2,136 @@ package shoppingMall;
 
 import java.util.*;
 import java.io.*;
+import java.text.DecimalFormat;
 
 
 public class OrdersManager {
 
+	// 구매 리스트
 	private LinkedHashMap<Integer,Orders> ordersList = new LinkedHashMap<Integer,Orders>();
-	private ArrayList<Orders> custom_ordersList = new ArrayList<Orders>();
+	// 고객별 구매 리스트
+	private ArrayList<Orders> customOrdersList = new ArrayList<Orders>();
 
+	// orders.csv 파일 경로
 	File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\orders.csv");
-	
-	
+
+	// 입력값 체크(정수) 객체 생성
 	InputCheck ip = new InputCheck();
 
-	//예외처리 후 다시 목록조회 해주기?
+	String bar = "-";
+	int barCount = 55;
 
+	// 구매 리스트 추가
 	public void addList(ProductManager pm, String id){
-
-		// 구매 리스트 추가
-
-		// 마지막 주문ID + 1
-
-		int lastID =0;
-		if(!ordersList.isEmpty()) {
-			System.out.println(ordersList.size());
-			
-			Integer[] keys = ordersList.keySet().toArray(new Integer[0]);
-			lastID = keys[keys.length - 1];
-		}
 		
-		int ordersID = lastID+1;
+		Scanner sc = new Scanner(System.in);
 
-		Scanner sc= new Scanner(System.in);
-
-		String customID = id;
-
-		System.out.print("구매할 상품 ID : ");
-		String tmp = sc.nextLine();
-		int productID = Integer.parseInt(tmp);
-
-		if(pm.check_PID(productID)) {
-
-			// 구매할 상품
-			Product pd = pm.searchInfo(productID); 
-
-			// 재고 0일 때
-			if(pd.getStock()==0) {
-				System.out.println("해당 ID의 상품은 품절입니다.");
+		boolean run = true;
+		while(run) {
+			
+			// 구매 리스트의 마지막 주문번호 획득
+			int lastID = 0;
+			
+			if(!ordersList.isEmpty()) {
+				Integer[] keys = ordersList.keySet().toArray(new Integer[0]);
+				lastID = keys[keys.length - 1];
 			}
-			else {
-				
-				int count=0;
-				String tmp_cnt="";
-				
-				do {
-					System.out.print("구매할 상품 수량 : ");
-					
-					tmp_cnt=sc.nextLine();			
-					
-				}while(!ip.checkInput(tmp_cnt));
-								
-				count=Integer.parseInt(tmp_cnt);
-				
 
-				if(pd.getStock()>=count) {
-					//sc.nextLine();
-					//System.out.print("결제 수단 번호를 선택하세요");
-					//String payment = sc.next();
-					
-					//상품ID로 상품명 가져오기
-					String productName = pd.getProductName();
+			int ordersID = lastID + 1; // 마지막 주문ID + 1
 
-					//상품ID로 가격 가져오기
-					int price = pd.getPrice();
 
-					int total = price*count;
+			String customID = id;
 
-					Orders od = new Orders(ordersID, customID, productID, productName, price, count, total);
+			String tmp = ""; // 정수값 판별을 위한 입력 변수
+			
+			// 상품ID를 checkInput메소드로 정수값만 받기
 
-					ordersList.put(od.getOrdersID(),od);
+			do {
+				System.out.print("구매할 상품 ID : ");
 
-					//재고 수량 감소
+				tmp=sc.nextLine();			
 
-					pm.modifyStock(pm.searchInfo(productID),-count);
+			}while(!ip.checkInput(tmp));
 
-					System.out.println("(주문번호 " + ordersID + ") " + customID + "님 " +" 구매가 완료되었습니다. ");
-					System.out.println();
+			int productID = Integer.parseInt(tmp);
+
+			// 구매할 상품의 ID 존재 여부 확인
+			if(pm.checkPID(productID)) {
+
+				// 구매할 상품
+				Product pd = pm.searchInfo(productID); 
+
+				// 재고 0일 때
+				if(pd.getStock() == 0) {
+					System.out.println("해당 ID의 상품은 품절입니다.");
 				}
 				else {
-					System.out.println("상품의 수량을 "+pd.getStock()+" 이하로 입력하세요.");
+
+					int count = 0;
+					String tmpCount = "";	// 정수값 판별을 위한 입력 변수
+
+					// 상품 수량을 checkInput메소드로 정수값만 받기
+					do {
+						System.out.print("구매할 상품 수량 : ");
+
+						tmpCount = sc.nextLine();         
+
+					}while(!ip.checkInput(tmpCount));
+
+					count=Integer.parseInt(tmpCount);
+
+					// 구매할 상품 수량이 재고보다 작거나 같을 때만 구매 가능
+					if(pd.getStock() >= count) {
+						//sc.nextLine();
+						//System.out.print("결제 수단 번호를 선택하세요");
+						//String payment = sc.next();
+
+						//상품ID로 상품명 가져오기
+						String productName = pd.getProductName();
+
+						//상품ID로 가격 가져오기
+						int price = pd.getPrice();
+						String deci = setDecimalFormat(price); 
+						int total = price*count;
+						
+						// 구매정보를 토대로 객체 생성
+
+						Orders od = new Orders(ordersID, customID, productID, productName, price, count, total);
+
+						// 객체를 구매리스트에 추가
+						
+						ordersList.put(od.getOrdersID(),od);
+
+						//재고 수량 감소
+
+						pm.modifyStock(pm.searchInfo(productID),-count);
+
+						System.out.println("(주문번호 " + ordersID + ") " + customID + "님 " +" 구매가 완료되었습니다. ");
+						System.out.println();
+						System.out.println("   주문ID     상품ID     상품명    상품가격     수량     총액");
+						System.out.println(bar.repeat(barCount));
+						System.out.printf("   %4s %6d %6s %7s %6d %7d\n",ordersID,productID,productName,deci,count,total);
+
+					}
+					// 구매할 상품 수량이 재고보다 많을 때 구매 불가
+					else {
+						System.out.println("상품의 수량을 "+ pd.getStock() +" 이하로 입력하세요.");
+					}
 				}
 			}
-		}
-		else {
-			System.out.println("해당 ID의 상품이 존재하지 않습니다.");
-		}
+			// 입력받은 상품ID가 존재하지 않을 때
+			else {
+				System.out.println("해당 ID의 상품이 존재하지 않습니다.");
+				continue;
+			}
+			run = false;
+		}System.out.println();
 
 	}
 
+	// 구매 리스트를 orders파일에 저장
 	public void uploadList() {
 
-		//File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\product.csv");
 		BufferedWriter bw = null;
 
 		String NEWLINE = System.lineSeparator();
@@ -117,6 +147,7 @@ public class OrdersManager {
 			bw.write(NEWLINE);
 
 			Iterator<Integer> keys = ordersList.keySet().iterator();
+			
 			while(keys.hasNext()) {
 				Integer key = keys.next();
 				String aData;
@@ -143,9 +174,8 @@ public class OrdersManager {
 		}
 	}
 
+	// orders파일에서 구매리스트 불러오기
 	public void readList() {
-
-		//File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\product.csv");
 
 		List<List<String>> records = new ArrayList<>();
 
@@ -160,7 +190,9 @@ public class OrdersManager {
 				records.add(Arrays.asList(values));
 			}
 
+
 			for(int i=1; i<records.size();i++) {
+
 				Orders od = new Orders(Integer.parseInt(records.get(i).get(0)),records.get(i).get(1),Integer.parseInt(records.get(i).get(2)),records.get(i).get(3),Integer.parseInt(records.get(i).get(4)), Integer.parseInt(records.get(i).get(5)), Integer.parseInt(records.get(i).get(6)));
 
 				ordersList.put(od.getOrdersID(), od);
@@ -168,97 +200,69 @@ public class OrdersManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		//records = ((1,a,b,c),(2,d,e,f),(3,g,h,i))
-		//values = (1,a,b,c)
-
 	}
 
-	// ! get으로 가져오는 값들 다 변수 선언으로 빼주기
 
-	public void readList_c(String cid) {
+	// 고객별 구매목록 불러오기
+	public void readListCustomer(String cid) {
 
-		//File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\product.csv");
+		// customOrdersList 초기화
+		customOrdersList.clear();
+		
+		// 고객ID로 구매정보를 찾아서 customOrdersList에 추가
 
-		List<List<String>> records = new ArrayList<>();
+		Iterator<Integer> keys = ordersList.keySet().iterator();
+	
+		while(keys.hasNext()) {
 
-		String line="";
+			int key=keys.next();
 
-		try(BufferedReader br = new BufferedReader(new FileReader(csv))){
+			String customID = ordersList.get(key).getCustomID();
 
-			// custom_ordersList 초기화
-			custom_ordersList.clear();
+			if( customID.equals(cid) ) {
 
-			String[] values = new String[7];
+				int ordersID = ordersList.get(key).getOrdersID();
+				int productID = ordersList.get(key).getProductID();
+				String productName = ordersList.get(key).getProductName();
+				int price = ordersList.get(key).getPrice();
+				int count = ordersList.get(key).getCount();
+				int total = ordersList.get(key).getTotal();
 
-			while((line = br.readLine())!= null) {
-				values = line.split(",");
-				records.add(Arrays.asList(values));
+				Orders od = new Orders(ordersID,cid,productID,productName,price,count,total);
+
+				customOrdersList.add(od);
 			}
-
-			for(int i=1; i<records.size();i++) {
-
-				String customID = records.get(i).get(1);
-
-				if( customID.equals(cid) ) {
-
-					Orders od = new Orders(Integer.parseInt(records.get(i).get(0)),records.get(i).get(1),Integer.parseInt(records.get(i).get(2)),records.get(i).get(3),Integer.parseInt(records.get(i).get(4)), Integer.parseInt(records.get(i).get(5)), Integer.parseInt(records.get(i).get(6)));
-
-					custom_ordersList.add(od);	
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-
-		//records = ((1,a,b,c),(2,d,e,f),(3,g,h,i))
-		//values = (1,a,b,c)
-
 	}
 
-	public void printList_c() {
+	// 고객별 구매목록 출력
+	public void printListCustomer() {
 
-		StringBuilder sb = new StringBuilder ();
+		System.out.println(" 주문ID     상품ID     상품명     상품가격      수량      총액");
+		System.out.println(bar.repeat(barCount));
+		
+		Iterator<Orders> iter = customOrdersList.iterator();
 
-		for(Orders e : custom_ordersList) {
+		while(iter.hasNext()) {
+
+			Orders od =iter.next();
 			
-			System.out.println(" 주문ID   상품ID   상품명   상품가격    수량    총액");
-			System.out.println("------------------------------------------");
+			int ordersid = od.getOrdersID();
+			int productID = od.getProductID();
+			String productName = od.getProductName();
+			int price = od.getPrice();
+			String deci = setDecimalFormat(price); 
+			int count = od.getCount();
+			int total = od.getTotal();
 
-			int id = e.getOrdersID();
-			int productID = e.getProductID();
-			String productName = e.getProductName();
-			int price =	e.getPrice();
-			int count = e.getCount();
-			int total = e.getTotal();
-
-			System.out.printf("%4d %6d %6s %7d %6d %7d\n",id,productID,productName,price,count,total);
-
-			//sb.append(Integer.toString(id)).append(' ').append(Integer.toString(productID)).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(count)).append(' ').append(Integer.toString(total)).append("\n");
+			System.out.printf("%4d %8d %9s %9s %8d %8d\n",ordersid,productID,productName,deci,count,total);
 		}
-
-		//		Iterator<Orders> iter = custom_ordersList.iterator();
-		//
-		//		while(iter.hasNext()) {
-		//
-		//			int ordersid = iter.next().getOrdersID();
-		//			int customID = iter.next().getCustomID();
-		//			int productID = iter.next().getProductID();
-		//			int price = iter.next().getPrice();
-		//			int count = iter.next().getCount();
-		//			int total = iter.next().getTotal();
-		//
-		//			sb.append(Integer.toString(ordersid)).append(' ').append(Integer.toString(customID)).append(' ').append(Integer.toString(productID)).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(count)).append(' ').append(Integer.toString(total)).append("\n");
-		//		}
-
-		//System.out.println(sb);
+		System.out.println();
 	}
+
 
 	public void printList() {
 
-		StringBuilder sb = new StringBuilder ();
-		
 		System.out.println(" 주문ID  고객ID  상품ID  상품명  상품가격   수량   총액");
 		System.out.println("--------------------------------------------");
 
@@ -273,64 +277,103 @@ public class OrdersManager {
 			int productID = ordersList.get(key).getProductID();
 			String productName = ordersList.get(key).getProductName();
 			int price = ordersList.get(key).getPrice();
+			String deci = setDecimalFormat(price); 
 			int count = ordersList.get(key).getCount();
 			int total = ordersList.get(key).getTotal();
 
-			System.out.printf("%4d %6s %6d %6s %7d %6d %8d\n",id,customID,productID,productName,price,count,total);
-			
-			//sb.append(Integer.toString(id)).append(' ').append(customID).append(' ').append(Integer.toString(productID)).append(' ').append(Integer.toString(price)).append(' ').append(Integer.toString(count)).append(' ').append(Integer.toString(total)).append("\n");
+			System.out.printf("%4d %6s %6d %6s %7s %6d %8d\n",id,customID,productID,productName,deci,count,total);
+		}
+	}
+
+	// 삭제할 주문ID가 customerOrdersList에 있는지 확인
+	// 존재하면 인덱스 반환 / 존재하지 않으면 -1 반환
+	public int searchOrders(int id) {
+
+		Iterator<Orders> iter = customOrdersList.iterator();
+
+		int idx=0;
+		while(iter.hasNext()) {
+
+			Orders od =iter.next();
+
+			int ordersid = od.getOrdersID();
+
+			if(ordersid==id) {
+				return idx;
+			}
+			idx++;
 		}
 
-		//System.out.println(sb);
+		return -1;
 	}
 
-	public void searchInfo(int id) {
-
-	}
-
+	// 주문 정보 삭제 (환불)
 	public void deleteList(ProductManager pm){
-
-		// 주문 정보 삭제 (환불)
-
-		//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		String ans;
 		Scanner sc = new Scanner(System.in);
+		boolean run = true;
+		String tmp=""; // 정수값 판별을 위한 입력 변수
 
+		// 해당 고객의 주문정보가 존재하면 주문번호 입력 받기
+		if(customOrdersList.size()>0) {
+			while(run) {
 
-		String tmp="";
-		
-		do {
-			System.out.println("주문번호 입력 : ");
-			
-			tmp=sc.nextLine();			
-			
-		}while(!ip.checkInput(tmp));
-		
-		int delete_id = Integer.parseInt(tmp);
+				// 입력받은 주문번호가 정수값인지 확인
+				do {
+					System.out.println("주문번호 입력 : ");
 
-		if(ordersList.containsKey(delete_id)==true) {
+					tmp=sc.nextLine();			
 
-			System.out.println("정말 주문 취소하시겠습니까?(y/n)");
-			ans = sc.next();
+				}while(!ip.checkInput(tmp));
 
-			if(ans.equals("y")) {
+				int deleteID = Integer.parseInt(tmp);
 
-				int productID = ordersList.get(delete_id).getProductID();
-				int count = ordersList.get(delete_id).getCount();
+				
+				// 삭제할 주문ID 존재 여부 확인
+				int idx=searchOrders(deleteID);
 
-				//재고 수량 증가
-				pm.modifyStock(pm.searchInfo(productID),count);
+				// 삭제할 주문ID가 존재하면 취소 여부 질문
+				if(idx>=0) {
 
-				//주문 정보 삭제
-				ordersList.remove(delete_id);
+					System.out.println("정말 주문 취소하시겠습니까?(y/n)");
+					ans = sc.nextLine();
 
+					if(ans.equals("y")) {
+						customOrdersList.remove(idx);
+						ordersList.remove(deleteID);
+
+						System.out.println("주문취소가 완료되었습니다.");
+					}
+					else {
+						return;
+					}
+				}		
+				// 삭제할 주문ID가 존재하지 않으면 다시 입력 유도
+				else {
+					System.out.println("해당 ID를 찾을 수 없습니다. 다시 입력해주세요.");
+					System.out.println("주문취소를 안하시려면 '0'을 눌러서 뒤로 나가주세요.");
+					
+					ans = sc.nextLine();
+					if(ans.equals("0")) {
+						return;
+					} else {
+						continue;
+					}
+				}
+				run =false;
 			}
-			else
-				return;
-		}else {
-			System.out.println("해당 ID를 찾을 수 없습니다.");
 		}
+		// 해당 고객의 주문정보가 존재하지 않을 때
+		else {
+			System.out.println("주문정보가 없습니다.");
+			System.out.println();
+		}
+	}
+
+	// 통화 단위 ',' 추가해서 문자열로 만들기
+	public String setDecimalFormat(int price) {// 가격 , 구분
+		return new DecimalFormat().format(price);
 	}
 
 }
