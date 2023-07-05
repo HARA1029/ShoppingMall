@@ -17,11 +17,10 @@ import java.util.Scanner;
 
 public class CustomerManager {
 
-	// 고객 리스트
 	private LinkedHashMap<String,Customer> customerList = new LinkedHashMap<String,Customer>();
 
-	// customer.csv 파일 경로
-	File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\customer.csv");
+	//파일 저장 경로
+	File csv = new File("C:\\Users\\gyeong\\KOSA\\git\\kosa_java\\customer.csv");
 
 	static Scanner sc= new Scanner(System.in); // 입력시 전역변수 설정
 
@@ -123,7 +122,8 @@ public class CustomerManager {
 			String address = customerList.get(key).getAddress();
 
 			System.out.printf("%4s %6s %6s %6s %7s\n",id,pw,name,phoneNum,address);
-
+			//         sb.append(id).append(' ').append(pw).append(' ').append(name).append(' ').append(phoneNum).append(' ').
+			//         append(address).append("\n");
 		}
 
 		System.out.println();
@@ -155,7 +155,7 @@ public class CustomerManager {
 
 				} else {
 					System.out.println("비밀번호가 틀렸습니다. 다시 입력해주세요.");
-					System.out.print("가입하지 않으신 분들은 '0' 을 다시 로그인하고 싶으신 분들은 다른 숫자를 입력해주세요.");
+					System.out.print("가입하지 않으신 분들은 '0' 을 다시 로그인하고 싶으신 분들은 다른 키를 입력해주세요.");
 					String num = sc.nextLine();
 					if(num.equals("0")) {
 						run = false;  
@@ -165,7 +165,7 @@ public class CustomerManager {
 
 			} else {
 				System.out.println("아이디가 틀렸습니다. 다시 입력해주세요.");
-				System.out.print("가입하지 않으신 분들은 '0' 을 다시 로그인하고 싶으신 분들은 다른 숫자를 입력해주세요.");
+				System.out.print("가입하지 않으신 분들은 '0' 을 다시 로그인하고 싶으신 분들은 다른 키를 입력해주세요.");
 				String num = sc.nextLine();
 				if(num.equals("0")) {
 					run = false;  
@@ -233,7 +233,7 @@ public class CustomerManager {
 
 		while(run){
 
-			System.out.print("고객 PW (4 ~ 10자리로 입력해주세요.): ");
+			System.out.print("고객 PW (4~10자리로 입력해주세요.): ");
 			customPW = sc.nextLine();
 
 			//PW 공백 입력 불가
@@ -246,7 +246,7 @@ public class CustomerManager {
 
 			// PW 길이제한 4 ~ 10
 			if(customPW.length() > 11 || customPW.length() < 4) { 
-				System.out.println("PW는 4 ~ 10자리로 입력해주세요.");
+				System.out.println("PW는 4~10자리로 입력해주세요.");
 				System.out.println("입력하신 글자 수 : " + customPW.length());
 				System.out.println();
 				continue;
@@ -286,7 +286,7 @@ public class CustomerManager {
 		while(run) {
 
 
-			System.out.print("전화번호 : ");
+			System.out.print("전화번호 (10~11자리 입력해주세요.): ");
 			phoneNum = sc.nextLine();
 
 			//전화번호 공백입력불가
@@ -301,7 +301,7 @@ public class CustomerManager {
 
 			//전화번호 길이제한 10~11자
 			if(phoneNum.length() < 10 || phoneNum.length() > 11 ) {
-				System.out.println("전화번호는는 10자~11자로 입력해주세요");
+				System.out.println("전화번호는 10자~11자로 입력해주세요");
 				System.out.println("입력하신 글자 수 : " + phoneNum.length());
 				System.out.println();
 				continue;
@@ -339,7 +339,7 @@ public class CustomerManager {
 			// => 전화번호 처럼 나누기 어려움(주소는 나뉘는 가짓수가 많이 때문에.
 			// ex. 시, 도, 군, 구, 동, 읍, 면, 리
 
-			System.out.print("주소 : ");
+			System.out.print("주소(공백없이 10자리 이상 입력해주세요.) : ");
 			address = sc.nextLine();
 
 			if(address.contains(" ") == true) {
@@ -347,12 +347,11 @@ public class CustomerManager {
 				address = address.replaceAll(" ", "");
 				System.out.println("공백제거 후 " + address + "로 변경하여 입력됩니다.");
 				System.out.println();
-				continue;
 			}
 
 			//주소 길이 제한 10자 이상
 			if(address.length() < 10 || address.length() < 1) { 
-				System.out.println("주소는 10자 이상으로 입력해주세요");
+				System.out.println("주소는 공백없이 10자 이상으로 입력해주세요");
 				System.out.println("입력하신 글자 수 : " + address.length());
 				System.out.println();
 				continue;
@@ -430,6 +429,7 @@ public class CustomerManager {
 
 		while(run){
 
+
 			//PW 수정 여부 선택
 			System.out.println("PW를 수정하려면 '1', 다음으로 넘어가려면 '0'을 눌러주세요.");
 			num = sc.nextLine();
@@ -438,7 +438,8 @@ public class CustomerManager {
 			if(num.equals("1")) {
 				System.out.print("수정할 PW (4~10자리로 입력해주세요.): ");
 				getCustomPW = sc.nextLine();
-				if(customerList.containsKey(getCustomPW) == true) {
+
+				if(customerList.containsKey(modifyID) == true) {
 					System.out.println("기존 PW와 같습니다. 기존 PW와 다른 PW를 입력해주세요.");
 				}
 
@@ -456,13 +457,15 @@ public class CustomerManager {
 					System.out.println("입력하신 글자 수 : " + getCustomPW.length());
 					System.out.println();
 					continue;
+
 				} 
-			}
+			} 
 
 			//수정을 원하지 않을 경우 다음로 넘어감
 			else if(num.equals("0")) {
 				run = false;
 			}
+
 		}
 
 		//고객명 수정
@@ -478,7 +481,7 @@ public class CustomerManager {
 				getCustomName = sc.nextLine();
 
 				//기존 고객명과 같을 경우 변경x
-				if(customerList.containsKey(getCustomName) == true) {
+				if(customerList.containsKey(modifyID) == true) {
 					System.out.println("기존 고객명과 같습니다. 기존 고객명과 다른 고객명을 입력해주세요.");
 				}
 
@@ -494,7 +497,6 @@ public class CustomerManager {
 				if(getCustomName.length() < 2 || getCustomName.length() > 7) { 
 					System.out.println("고객명은 2자~7자로 입력해주세요");
 					System.out.println();
-					continue;
 				}
 			}
 			//고객명 수정하지 않을 경우 다음으로 가기
@@ -517,7 +519,7 @@ public class CustomerManager {
 				getPhoneNum= sc.nextLine();
 
 				//기존 전화번호와 같으면 수정 불가
-				if(customerList.containsKey(getPhoneNum) == true) {
+				if(customerList.containsKey(modifyID) == true) {
 					System.out.println("기존 전화번호와 같습니다. 기존 전화번호와 다른 전화번호를 입력해주세요.");
 				}
 
@@ -533,7 +535,6 @@ public class CustomerManager {
 					System.out.println("전화번호는는 10자~11자로 입력해주세요.");
 					System.out.println("입력하신 글자 수 : " + getPhoneNum.length());
 					System.out.println();
-					continue;
 				}
 				// 앞에 3자리
 				String num1 = getPhoneNum.substring(0,3); 
@@ -580,7 +581,7 @@ public class CustomerManager {
 				}
 
 				//기존 주소와 같은 경우 수정 불가
-				if(customerList.containsKey(getAddress) == true) {
+				if(customerList.containsKey(modifyID) == true) {
 					System.out.println("기존 주소와 같습니다. 기존 주소와 다른 주소를 입력해주세요.");
 				}
 
@@ -589,7 +590,6 @@ public class CustomerManager {
 					System.out.println("주소는 10자 이상으로 입력해주세요");
 					System.out.println("입력하신 글자 수 : " + getAddress.length());
 					System.out.println();
-					continue;
 				} 
 			} else if(num.equals("0")) {
 				run= false;
@@ -628,7 +628,7 @@ public class CustomerManager {
 
 				System.out.println("고객정보가 확인되었습니다.");
 				System.out.println("정말 탈퇴하시겠습니까?(y/n)");
-				ans = sc.next();
+				ans = sc.nextLine();
 
 				//삭제를 원하는 경우 'y'
 				if(ans.equals("y")) {
@@ -646,9 +646,14 @@ public class CustomerManager {
 			}
 			//입력한 고객 정보와 고객리스트에 있는 정보가 같은 경우 삭제 불가능
 			else {
-				System.out.println("해당 ID를 찾을 수 없습니다.");
-				System.out.println("다시 입력해주세요.");
-				continue;
+				System.out.println("해당 ID를 찾을 수 없습니다. 다시 입력해주세요.");
+				System.out.println("탈퇴를 안하시려면 '0'을 눌러서 뒤로 나가주세요. 계속 진행하시려면 '0'을 제외한 키를 눌러주세요.");
+				ans = sc.nextLine();
+				if(ans.equals("0")) {
+					return;
+				} else {
+					continue;
+				}
 			}
 			run = false;
 		}

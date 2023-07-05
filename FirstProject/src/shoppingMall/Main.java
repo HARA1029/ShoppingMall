@@ -28,7 +28,6 @@ public class Main {
 
 		// 메인 메뉴
 		menu.printMain(cm,pm,om,menu);
-
 		
  		//고객/상품/구매 리스트 업로드
 		
@@ -36,6 +35,5 @@ public class Main {
 		pm.uploadList();
 		om.uploadList();
 
-		// 변수 깔끔하게 정리 , 주석 달기
 	}
 }
