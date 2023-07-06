@@ -660,9 +660,9 @@ public class CustomerManager {
 				else
 					return;
 			}
-			//입력한 고객 정보와 고객리스트에 있는 정보가 같은 경우 삭제 불가능
+			//입력한 고객 정보와 고객리스트에 있는 정보가 다른 경우 삭제 불가능
 			else {
-				System.out.println("해당 ID를 찾을 수 없습니다. 다시 입력해주세요.");
+				System.out.println("고객 정보가 일치하지 않습니다. 다시 입력해주세요.");
 				System.out.println("탈퇴를 안하시려면 '0'을 눌러서 뒤로 나가주세요. 계속 진행하시려면 '0'을 제외한 키를 눌러주세요.");
 				ans = sc.nextLine();
 				if(ans.equals("0")) {
