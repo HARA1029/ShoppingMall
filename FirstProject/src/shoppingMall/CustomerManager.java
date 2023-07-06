@@ -14,13 +14,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-
 public class CustomerManager {
 
 	private LinkedHashMap<String,Customer> customerList = new LinkedHashMap<String,Customer>();
 
 	//파일 저장 경로
-	File csv = new File("C:\\Users\\gyeong\\KOSA\\git\\kosa_java\\customer.csv");
+	File csv = new File("C:\\Users\\KOSA\\eclipse-workspace\\HelloJava\\customer.csv");
 
 	static Scanner sc= new Scanner(System.in); // 입력시 전역변수 설정
 
@@ -386,10 +385,10 @@ public class CustomerManager {
 	public void modifyList() {
 
 		String modifyID = null;
-		String getCustomPW = null;
-		String getCustomName = null;
-		String getPhoneNum = null;
-		String getAddress = null;
+		String customPW = null;
+		String customName = null;
+		String phoneNum = null;
+		String address = null;
 
 		boolean run = true;
 
@@ -403,11 +402,11 @@ public class CustomerManager {
 			System.out.print("ID : ");
 			modifyID = sc.nextLine();
 			System.out.print("PW : ");
-			getCustomPW = sc.nextLine();
+			customPW = sc.nextLine();
 
 			//수정할 고객정보 확인
 			if(customerList.containsKey(modifyID) == true) {
-				if (customerList.get(modifyID).getCustomPW().equals(getCustomPW)) {
+				if (customerList.get(modifyID).getCustomPW().equals(customPW)) {
 					System.out.println("고객확인이 완료되었습니다.");
 
 				} else {
@@ -437,28 +436,32 @@ public class CustomerManager {
 			//PW 수정
 			if(num.equals("1")) {
 				System.out.print("수정할 PW (4~10자리로 입력해주세요.): ");
-				getCustomPW = sc.nextLine();
+				customPW = sc.nextLine();
 
-				if(customerList.containsKey(modifyID) == true) {
+				if(customerList.get(modifyID).getCustomPW().equals(customPW)) {
 					System.out.println("기존 PW와 같습니다. 기존 PW와 다른 PW를 입력해주세요.");
 				}
-
+	
 				//공백 입력 불가
-				if(getCustomPW.contains(" ") == true) {
+				else if(customPW.contains(" ") == true) {
 					System.out.println("공백은 입력할 수 없습니다.");
-					getCustomPW = getCustomPW.replaceAll(" ", "");
-					System.out.println("공백제거 후 " + getCustomPW + "로 변경하여 입력됩니다.");
+					customPW = customPW.replaceAll(" ", "");
+					System.out.println("공백제거 후 " + customPW + "로 변경하여 입력됩니다.");
 					System.out.println();   
 				}
 
 				// PW 길이제한 4 ~ 10
-				if(getCustomPW.length() > 10 || getCustomPW.length() < 4) { 
+				else if(customPW.length() > 10 || customPW.length() < 4) { 
 					System.out.println("PW는 10자 이내로 입력해주세요.");
-					System.out.println("입력하신 글자 수 : " + getCustomPW.length());
+					System.out.println("입력하신 글자 수 : " + customPW.length());
 					System.out.println();
 					continue;
 
-				} 
+				}
+				
+				else {
+					run=false;
+				}
 			} 
 
 			//수정을 원하지 않을 경우 다음로 넘어감
@@ -478,25 +481,29 @@ public class CustomerManager {
 
 			if(num.equals("1")) {
 				System.out.print("수정할 고객명 (2자~7자로 입력해주세요.): ");
-				getCustomName = sc.nextLine();
+				customName = sc.nextLine();
 
 				//기존 고객명과 같을 경우 변경x
-				if(customerList.containsKey(modifyID) == true) {
+				if(customerList.get(modifyID).getCustomName().equals(customName)) {
 					System.out.println("기존 고객명과 같습니다. 기존 고객명과 다른 고객명을 입력해주세요.");
 				}
 
 				//공백 입력 불가 => 공백입력시 모두 제거
-				if(getCustomName.contains(" ") == true) {
+				else if(customName.contains(" ") == true) {
 					System.out.println("공백은 입력할 수 없습니다.");
-					getCustomName = getCustomName.replaceAll(" ", "");
-					System.out.println("공백제거 후 " + getCustomName + "로 변경하여 입력됩니다.");
+					customName = customName.replaceAll(" ", "");
+					System.out.println("공백제거 후 " + customName + "로 변경하여 입력됩니다.");
 					System.out.println();   
 				}
 
 				//고객명 길이 제한 2~7자
-				if(getCustomName.length() < 2 || getCustomName.length() > 7) { 
+				else if(customName.length() < 2 || customName.length() > 7) { 
 					System.out.println("고객명은 2자~7자로 입력해주세요");
 					System.out.println();
+				}
+				
+				else {
+					run = false;
 				}
 			}
 			//고객명 수정하지 않을 경우 다음으로 가기
@@ -509,6 +516,8 @@ public class CustomerManager {
 
 		run = true;
 
+		// 앞에 3자리
+		
 		while(run) {
 			//전화번호 수정여부 선택
 			System.out.println("전화번호를 수정하려면 '1', 다음으로 넘어가려면 '0'을 눌러주세요.");
@@ -516,43 +525,45 @@ public class CustomerManager {
 
 			if(num.equals("1")) {
 				System.out.print("수정할 전화번호 (10자~11자로 입력해주세요.): ");
-				getPhoneNum= sc.nextLine();
+				phoneNum= sc.nextLine();
+				
+				String num1 = phoneNum.substring(0,3); 
+				String check = num1.substring(0,2);
 
 				//기존 전화번호와 같으면 수정 불가
-				if(customerList.containsKey(modifyID) == true) {
+				if(customerList.get(modifyID).getPhoneNum().equals(phoneNum)) {
 					System.out.println("기존 전화번호와 같습니다. 기존 전화번호와 다른 전화번호를 입력해주세요.");
 				}
 
 				//공백입력 불가
-				if(getPhoneNum.contains(" ") == true) {
+				else if(phoneNum.contains(" ") == true) {
 					System.out.println("공백은 입력할 수 없습니다. 다시 입력해주세요.");
 					System.out.println();
 					continue;
 				}
 
 				//전화번호 길이 10~11자
-				if(getPhoneNum.length() < 10 || getPhoneNum.length() > 11 || getPhoneNum.length() < 1) { 
+				else if(phoneNum.length() < 10 || phoneNum.length() > 11 || phoneNum.length() < 1) { 
 					System.out.println("전화번호는는 10자~11자로 입력해주세요.");
-					System.out.println("입력하신 글자 수 : " + getPhoneNum.length());
+					System.out.println("입력하신 글자 수 : " + phoneNum.length());
 					System.out.println();
 				}
-				// 앞에 3자리
-				String num1 = getPhoneNum.substring(0,3); 
-				String check = num1.substring(0,2);
 
 				//대부분 앞자리 01x로 시작하는 3자리 체크( ex. 010.011.017.018...)
-				if(!check.equals("01") ) {
+				else if(!check.equals("01") ) {
 					System.out.println("전화번호는 01x으로 시작해야 합니다.");
 					System.out.println();
 					continue;
 
 				} else {
 					// 중간자리 3~4자리(ex.010이 아닌 번호는 중간에 3자리인 경우 있음.) : 앞 3자리와 뒷 4자리 자르고 나머지 부분 입력
-					String num2 = getPhoneNum.substring(3, getPhoneNum.length()-4);
+					String num2 = phoneNum.substring(3, phoneNum.length()-4);
 					//맨뒤에 4자리 잘라서 입력
-					String num3 = getPhoneNum.substring(getPhoneNum.length()-4, getPhoneNum.length());
+					String num3 = phoneNum.substring(phoneNum.length()-4, phoneNum.length());
 					//나눈 번호 합쳐서 xxx-xxxx-xxxx 식으로 입력
 					System.out.println("입력된 전화번호 : " + num1 + "-" + num2 + "-" +  num3);
+					
+					run = false;
 				}
 			} 
 			// 전화번호 수정 원하지 않는 경우 다음으로 넘어감
@@ -572,31 +583,36 @@ public class CustomerManager {
 
 			if(num.equals("1")) {
 				System.out.print("수정할 주소 : ");
-				getAddress = sc.nextLine();
+				address = sc.nextLine();
 
-				if(getAddress.contains(" ") == true) {
+				//기존 주소와 같은 경우 수정 불가
+				if(customerList.get(modifyID).getAddress().equals(address)) {
+					System.out.println("기존 주소와 같습니다. 기존 주소와 다른 주소를 입력해주세요.");
+				}
+				
+				else if(address.contains(" ") == true) {
 					System.out.println("공백은 입력할 수 없습니다. 다시 입력해주세요.");
 					System.out.println();
 					continue;
 				}
 
-				//기존 주소와 같은 경우 수정 불가
-				if(customerList.containsKey(modifyID) == true) {
-					System.out.println("기존 주소와 같습니다. 기존 주소와 다른 주소를 입력해주세요.");
-				}
-
 				//주소길이 제한 10자 이상
-				if(getAddress.length() < 10 || getAddress.length() < 1) { 
+				else if(address.length() < 10 || address.length() < 1) { 
 					System.out.println("주소는 10자 이상으로 입력해주세요");
-					System.out.println("입력하신 글자 수 : " + getAddress.length());
+					System.out.println("입력하신 글자 수 : " + address.length());
 					System.out.println();
 				} 
+				
+				else {
+					run = false;
+				}
+				
 			} else if(num.equals("0")) {
 				run= false;
 			}
 		}
 
-		Customer ct = new Customer(modifyID, getCustomPW, getCustomName, getPhoneNum, getAddress);
+		Customer ct = new Customer(modifyID, customPW, customName, phoneNum, address);
 
 		//고객리스트에서 일치하는 고객의 정보를 입력한 값으로 변경
 		customerList.replace(modifyID ,ct);
